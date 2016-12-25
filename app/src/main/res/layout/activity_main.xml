@@ -6,15 +6,58 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.edgarasvilija.spaceshooter.MainActivity">
+    android:paddingTop="20dp"
+    tools:context="com.edgarasvilija.spaceshooter.MainActivity"
+    android:background="@drawable/background">
 
-
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo"
+        android:layout_above="@+id/playButton" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:width="200dp"
+        android:height="60dp"
+        android:textSize="25dp"
         android:text="Play"
         android:id="@+id/playButton"
-        android:layout_centerVertical="true"
+        android:layout_above="@+id/buttonCredits"
+        android:layout_alignLeft="@+id/buttonCredits"
+        android:layout_alignStart="@+id/buttonCredits" />
+    
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="200dp"
+        android:height="60dp"
+        android:textSize="25dp"
+        android:text="Credits"
+        android:id="@+id/buttonCredits"
+        android:layout_above="@+id/buttonQuit"
+        android:layout_alignLeft="@+id/buttonQuit"
+        android:layout_alignStart="@+id/buttonQuit" />
+    
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="200dp"
+        android:height="60dp"
+        android:textSize="25dp"
+        android:text="Quit"
+        android:id="@+id/buttonQuit"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="96dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/textView"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
