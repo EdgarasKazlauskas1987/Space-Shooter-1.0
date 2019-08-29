@@ -15,78 +15,70 @@ import java.util.Random;
  */
 public class Meteor
 {
-    private Bitmap bitmap;
-    private Bitmap resizedMeteor;
+    private Bitmap rawMeteor;
+    private Bitmap meteor;
 
-    private int x;
-    private int y;
+    private int xCoordinate;
+    private int yCoordinate;
 
     private Rect hitBox;
 
     GameActivity gameActivity = new GameActivity();
 
-    public Meteor(Context context, int x, int y)
+    public Meteor(Context context, int xCoordinate, int yCoordinate)
     {
-
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_meteor);
-        //counting 3procent of all screen area
+        rawMeteor = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_meteor);
+        //counting 3% of all screen area
         int areaSize = (int)(gameActivity.getArea()*(0.5f/100.0f));
         //counting root of areaSize variable
         int root = (int) Math.sqrt(areaSize);
 
-        resizedMeteor = Bitmap.createScaledBitmap(bitmap, root, root, true);
+        meteor = Bitmap.createScaledBitmap(rawMeteor, root, root, true);
 
-        this.x = x;
-        this.y = y;
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
 
-        // Initialize the hit box
-        hitBox = new Rect(getX(), getY(), resizedMeteor.getWidth(), resizedMeteor.getHeight());
+        hitBox = new Rect(getXCoordinate(), getYCoordinate(), meteor.getWidth(), meteor.getHeight());
     }
 
     public void update(float deltaTime)
     {
-        if (y > gameActivity.getYpart())
+        if (yCoordinate > gameActivity.getYpart())
         {
             Random placeGenerator = new Random();
 
             //makes meteor appear only within screen
-            x = placeGenerator.nextInt(gameActivity.getXpart() - getBitmap().getWidth());
-            y = 0;
-
-        }
-
-        else {
-
-            y += 3* (gameActivity.getYpart() / 15) * deltaTime;
-
+            xCoordinate = placeGenerator.nextInt(gameActivity.getXpart() - getRawMeteor().getWidth());
+            yCoordinate = 0;
+        } else {
+            yCoordinate += 3 * (gameActivity.getYpart() / 15) * deltaTime;
         }
 
         // Refresh hit box location
-        hitBox.left = getX();
-        hitBox.top =  getY();
-        hitBox.right = getX() + resizedMeteor.getWidth();
-        hitBox.bottom = getY() + resizedMeteor.getHeight();
-
+        hitBox.left = getXCoordinate();
+        hitBox.top =  getYCoordinate();
+        hitBox.right = getXCoordinate() + meteor.getWidth();
+        hitBox.bottom = getYCoordinate() + meteor.getHeight();
     }
 
-    public Bitmap getBitmap()
+    public Bitmap getRawMeteor()
     {
-        return resizedMeteor;
+        return meteor;
     }
 
-    public int getX()
+    public int getXCoordinate()
     {
-        return x;
+        return xCoordinate;
     }
 
-    public int getY()
+    public int getYCoordinate()
     {
-        return y;
+        return yCoordinate;
     }
 
-    public void setY()
+    public void setYCoorinate()
     {
-        y = -10;
+        yCoordinate = -10;
     }
 
     public Rect getHitBox()

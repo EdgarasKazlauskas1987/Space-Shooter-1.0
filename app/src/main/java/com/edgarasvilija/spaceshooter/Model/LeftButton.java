@@ -12,43 +12,30 @@ import com.edgarasvilija.spaceshooter.R;
  */
 public class LeftButton
 {
-    private Bitmap bitmapLeft;
-    private Bitmap resizedLeft;
+    private Bitmap rawLeftButton;
+    private Bitmap leftButton;
 
-    private int x;
-    private int y;
+    private int xCoordinate;
+    private int yCoordinate;
 
     GameActivity gameActivity = new GameActivity();
 
-    public LeftButton(Context context, int x, int y)
+    public LeftButton(Context context, int xCoordinate, int yCoordinate)
     {
-        bitmapLeft = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_left_button);
-        this.x = x;
-        this.y = y;
+        rawLeftButton = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_left_button);
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
 
-        //counting 3procent of all screen area
+        //counting 3% of all screen area
         int areaSize = (int)(gameActivity.getArea()*(3.0f/100.0f));
         //counting root of areaSize variable
         int root = (int) Math.sqrt(areaSize);
 
-        resizedLeft = Bitmap.createScaledBitmap(bitmapLeft, root, root, true);
-
+        leftButton = Bitmap.createScaledBitmap(rawLeftButton, root, root, true);
     }
 
-    public Bitmap getBitmap()
+    public Bitmap getLeftButton()
     {
-        return resizedLeft;
+        return leftButton;
     }
-
-    public int getX()
-    {
-        return x;
-    }
-
-    public int getY()
-    {
-        return y;
-    }
-
-
 }

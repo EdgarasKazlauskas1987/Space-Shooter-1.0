@@ -12,41 +12,30 @@ import com.edgarasvilija.spaceshooter.R;
  */
 public class StopButton
 {
-    Bitmap stopButton;
-    Bitmap resizedStopButton;
+    private Bitmap rawStopButton;
+    private Bitmap stopButton;
 
-    private int x;
-    private int y;
+    private int xCoordinate;
+    private int yCoordinate;
 
     GameActivity gameActivity = new GameActivity();
 
-    public StopButton(Context context, int x, int y)
+    public StopButton(Context context, int xCoordinate, int yCoordinate)
     {
-        stopButton = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_stop_button);
-        this.x = x;
-        this.y = y;
+        rawStopButton = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_stop_button);
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
 
-        //counting 3procent of all screen area
+        //counting 3% of all screen area
         int areaSize = (int)(gameActivity.getArea()*(1.0f/100.0f));
         //counting root of areaSize variable
         int root = (int) Math.sqrt(areaSize);
 
-        resizedStopButton = Bitmap.createScaledBitmap(stopButton, root, root, true);
+        stopButton = Bitmap.createScaledBitmap(rawStopButton, root, root, true);
     }
 
-    public Bitmap getBitmap()
+    public Bitmap getStopButton()
     {
-        return resizedStopButton;
+        return stopButton;
     }
-
-    public int getX()
-    {
-        return x;
-    }
-
-    public int getY()
-    {
-        return y;
-    }
-
 }

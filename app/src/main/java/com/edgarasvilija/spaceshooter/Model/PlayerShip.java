@@ -15,18 +15,16 @@ import com.edgarasvilija.spaceshooter.R;
 
 public class PlayerShip
 {
+    private Bitmap rawPlayerShip;
+    private Bitmap playerShip;
 
-    public Bitmap bitmap;
-    public Bitmap resizedBitmap;
-
-    //x and y are screen coordinates for player ship
-    private int x;
-    private int y;
+    private int xCoordinate;
+    private int yCoordinate;
     private int speed = 0;
 
     //stop playerShip from leaving the screen
     private int maxX;
-    private int minX =0;
+    private int minX = 0;
 
     private boolean goingRight;
     private boolean goingLeft;
@@ -35,43 +33,37 @@ public class PlayerShip
 
     GameActivity gameActivity = new GameActivity();
 
-    //constructor
-    public PlayerShip(Context context, int x, int y)
+    public PlayerShip(Context context, int xCoordinate, int yCoordinate)
     {
-
         speed = 1;
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_player_ship);
+        rawPlayerShip = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_player_ship);
 
-        //counting 3procent of all screen area
+        //counting 3% of all screen area
         int areaSize = (int)(gameActivity.getArea()*(2.5f/100.0f));
         //counting root of areaSize variable
         int root = (int) Math.sqrt(areaSize);
 
-        resizedBitmap = Bitmap.createScaledBitmap(bitmap, root, root, true);
+        playerShip = Bitmap.createScaledBitmap(rawPlayerShip, root, root, true);
 
-        this.x = x;
-        this.y = y;
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
 
-        // Initialize the hit box
-        hitBox = new Rect(getX(), getY(), resizedBitmap.getWidth() , resizedBitmap.getHeight());
-
+        hitBox = new Rect(getxCoordinate(), getyCoordinate(), playerShip.getWidth() , playerShip.getHeight());
     }
 
-
-
-    //incrementing ships y by 1 every time the method is called
+    //incrementing ships yCoordinate by 1 every time the method is called
     public void update(float deltaTime, int newY)
     {
-        //y--;
+        //yCoordinate--;
         if (goingRight)
         {
             //playerShip goes img_right_button
-            x += 1 * (gameActivity.getXpart() / 2) *deltaTime;
+            xCoordinate += 1 * (gameActivity.getXpart() / 2) *deltaTime;
         }
 
         else if (goingLeft){
             //playerShip goes back to img_right_button
-            x -= 1 * (gameActivity.getXpart() / 2) *deltaTime;
+            xCoordinate -= 1 * (gameActivity.getXpart() / 2) *deltaTime;
         }
 
         else {
@@ -79,38 +71,35 @@ public class PlayerShip
         }
 
         // Refresh hit box location
-        hitBox.left = getX();
+        hitBox.left = getxCoordinate();
         hitBox.top =  newY;
-        hitBox.right = getX() + resizedBitmap.getWidth();
-        hitBox.bottom = newY + resizedBitmap.getHeight();
+        hitBox.right = getxCoordinate() + playerShip.getWidth();
+        hitBox.bottom = newY + playerShip.getHeight();
 
-        if  (x >getMaxX() )
+        if  (xCoordinate >getMaxX() )
         {
-            x = getMaxX();
+            xCoordinate = getMaxX();
         }
 
-        if (x < minX)
+        if (xCoordinate < minX)
         {
-            x = minX;
+            xCoordinate = minX;
         }
-
     }
 
-    //Getters
-    //sharing image, speed, x and y coordinates with the view
-    public Bitmap getBitmap()
+    public Bitmap getRawPlayerShip()
     {
-        return resizedBitmap;
+        return playerShip;
     }
 
     public int getBitmapWidth()
     {
-        return resizedBitmap.getWidth();
+        return playerShip.getWidth();
     }
 
     public int getMaxX()
     {
-        maxX = gameActivity.getXpart()  - resizedBitmap.getWidth();
+        maxX = gameActivity.getXpart()  - playerShip.getWidth();
 
         return maxX;
     }
@@ -120,14 +109,14 @@ public class PlayerShip
         return speed;
     }
 
-    public int getX()
+    public int getxCoordinate()
     {
-        return x;
+        return xCoordinate;
     }
 
-    public int getY()
+    public int getyCoordinate()
     {
-        return y;
+        return yCoordinate;
     }
 
     //move ship to img_right_button
@@ -142,7 +131,6 @@ public class PlayerShip
     {
         goingLeft = true;
         goingRight = false;
-
     }
 
     public void standStill()
@@ -155,7 +143,5 @@ public class PlayerShip
     {
         return hitBox;
     }
-
-
-    }
+}
 

@@ -12,45 +12,30 @@ import com.edgarasvilija.spaceshooter.R;
  */
 public class TargetButton
 {
-    private Bitmap bitmapTarget;
-    public Bitmap resizedTarget;
+    private Bitmap rawTargetButton;
+    private Bitmap targetButton;
 
-    private int x;
-    private int y;
+    private int xCoordinate;
+    private int yCoordinate;
 
     GameActivity gameActivity = new GameActivity();
 
-    public TargetButton(Context context, int x, int y)
+    public TargetButton(Context context, int xCoordinate, int yCoordinate)
     {
+        rawTargetButton = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_target);
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
 
-        bitmapTarget = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_target);
-        this.x = x;
-        this.y = y;
-
-        //counting 3procent of all screen area
+        //counting 3% of all screen area
         int areaSize = (int)(gameActivity.getArea()*(3.0f/100.0f));
-
         //counting root of areaSize variable
         int root = (int) Math.sqrt(areaSize);
 
-        resizedTarget = Bitmap.createScaledBitmap(bitmapTarget, root, root, true);
-
+        targetButton = Bitmap.createScaledBitmap(rawTargetButton, root, root, true);
     }
 
-    public Bitmap getBitmap()
+    public Bitmap getTargetButton()
     {
-        return resizedTarget;
+        return targetButton;
     }
-
-    public int getX()
-    {
-        return x;
-    }
-
-    public int getY()
-    {
-        return y;
-    }
-
-
 }
