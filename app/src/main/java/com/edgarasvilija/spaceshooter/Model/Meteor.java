@@ -25,6 +25,8 @@ public class Meteor
 
     GameActivity gameActivity = new GameActivity();
 
+    Random generator = new Random();
+
     public Meteor(Context context, int xCoordinate, int yCoordinate)
     {
         rawMeteor = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_meteor);
@@ -45,10 +47,8 @@ public class Meteor
     {
         if (yCoordinate > gameActivity.getYpart())
         {
-            Random placeGenerator = new Random();
-
             //makes meteor appear only within screen
-            xCoordinate = placeGenerator.nextInt(gameActivity.getXpart() - getRawMeteor().getWidth());
+            xCoordinate = generator.nextInt(gameActivity.getXpart() - getRawMeteor().getWidth());
             yCoordinate = 0;
         } else {
             yCoordinate += 3 * (gameActivity.getYpart() / 15) * deltaTime;

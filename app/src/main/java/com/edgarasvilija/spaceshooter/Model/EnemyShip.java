@@ -27,8 +27,9 @@ public class EnemyShip
     //holds coordinates of 4 edges of object
     private Rect enemyShipRect;
 
+    Random generator = new Random();
+
     public EnemyShip(Context context, int screenX, int screenY) {
-        Random generator = new Random();
 
         int whichBitmap = generator.nextInt(3);
         switch (whichBitmap) {

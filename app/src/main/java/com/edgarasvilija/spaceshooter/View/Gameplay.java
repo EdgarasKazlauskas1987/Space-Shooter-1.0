@@ -25,6 +25,7 @@ import com.edgarasvilija.spaceshooter.Model.PlayerShip;
 import com.edgarasvilija.spaceshooter.Model.RightButton;
 import com.edgarasvilija.spaceshooter.Model.StopButton;
 import com.edgarasvilija.spaceshooter.Model.TargetButton;
+import com.edgarasvilija.spaceshooter.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -132,9 +133,9 @@ public class Gameplay extends SurfaceView implements Runnable {
         shieldsLeft = 3;
         numberOfShoots = 0;
         playerShip = new PlayerShip(context, rightForRightButton/2 , leftForRightButton); //x y
-        leftButton = new LeftButton(context, rightForRightButton, 0);
-        rightButton = new RightButton(context, rightForRightButton, 0);
-        targetButton = new TargetButton(context, rightForRightButton, leftForRightButton);
+        leftButton = new LeftButton(context, rightForRightButton, 0, R.drawable.img_left_button);
+        rightButton = new RightButton(context, rightForRightButton, 0, R.drawable.img_right_button);
+        targetButton = new TargetButton(context, rightForRightButton, leftForRightButton, R.drawable.img_target);
         stopButton = new StopButton(context, rightForRightButton, leftForRightButton);
 
 
@@ -234,7 +235,7 @@ public class Gameplay extends SurfaceView implements Runnable {
 
         decrementPointsScored();
 
-        playerShip.update(deltaTime, left - targetButton.getTargetButton().getHeight() - playerShip.getRawPlayerShip().getHeight());
+        playerShip.update(deltaTime, left - targetButton.getButton().getHeight() - playerShip.getRawPlayerShip().getHeight());
 
         //updating enemyship
         enemyShip1.update(deltaTime);
@@ -471,7 +472,7 @@ public class Gameplay extends SurfaceView implements Runnable {
 
             // drawing players ship
             canvas.drawBitmap(playerShip.getRawPlayerShip(), playerShip.getxCoordinate()  ,
-                    left - targetButton.getTargetButton().getHeight() - playerShip.getRawPlayerShip().getHeight(), paint);
+                    left - targetButton.getButton().getHeight() - playerShip.getRawPlayerShip().getHeight(), paint);
 
 
             //drawing enemy ships
@@ -485,16 +486,16 @@ public class Gameplay extends SurfaceView implements Runnable {
             canvas.drawBitmap(meteor2.getRawMeteor(), meteor2.getXCoordinate(), meteor2.getYCoordinate(), paint);
 
             //drawing the img_left_button button
-            canvas.drawBitmap(leftButton.getLeftButton(), right, left - leftButton.getLeftButton().getHeight(), paint);
+            canvas.drawBitmap(leftButton.getButton(), right, left - leftButton.getButton().getHeight(), paint);
 
             //drawing the img_right_button button
-            canvas.drawBitmap(rightButton.getRightButton(), rightForRightButton -
-                    rightButton.getRightButton().getWidth(), leftForRightButton -
-                    rightButton.getRightButton().getHeight(), paint);
+            canvas.drawBitmap(rightButton.getButton(), rightForRightButton -
+                    rightButton.getButton().getWidth(), leftForRightButton -
+                    rightButton.getButton().getHeight(), paint);
 
          //   canvas.drawBitmap(targetButton.getStopButton(), ((img_right_button/2) - (targetButton.getStopButton().getWidth() - (targetButton.getStopButton().getWidth() *2))), img_left_button - targetButton.getStopButton().getHeight(), paint);
-                canvas.drawBitmap(targetButton.getTargetButton(), ((rightForRightButton/2) - (targetButton.getTargetButton().getWidth()/2)),
-                left - targetButton.getTargetButton().getHeight(), paint);
+                canvas.drawBitmap(targetButton.getButton(), ((rightForRightButton/2) - (targetButton.getButton().getWidth()/2)),
+                left - targetButton.getButton().getHeight(), paint);
 
             //drawing stop button
             canvas.drawBitmap(stopButton.getStopButton(), rightForRightButton-stopButton.getStopButton().getWidth(), 0, paint);
@@ -608,25 +609,26 @@ public class Gameplay extends SurfaceView implements Runnable {
                 int y = (int) motionEvent.getY();
 
                 //checking if we have pressed LEFT button
-                if ((x > right && x < right + leftButton.getLeftButton().getWidth()) &&
-                        (y > left - leftButton.getLeftButton().getHeight() && y < left))
+                if ((x > right && x < right + leftButton.getButton().getWidth()) &&
+                        (y > left - leftButton.getButton().getHeight() && y < left))
                 {
                     playerShip.goLeft();
                     //pause();
                 }
 
                 //checking if player clicked RIGHT button
-                else if ((x <= rightForRightButton && x >= rightForRightButton - rightButton.getRightButton().getWidth()) &&
-                        ( y  <= left && y >= left - rightButton.getRightButton().getHeight()))
+                else if ((x <= rightForRightButton && x >= rightForRightButton - rightButton.getButton().getWidth()) &&
+                        ( y  <= left && y >= left - rightButton.getButton().getHeight()))
             {
                 playerShip.goRight();
+
                 //resume();
             }
 
                 //cheking if player clicked SHOOT button
-                else if ((x <= rightForRightButton/2 + targetButton.getTargetButton().getWidth()/2) &&
-                ((x >= rightForRightButton/2 - (targetButton.getTargetButton().getWidth()/2)))
-                        && (y <= left && (y >= left - rightButton.getRightButton().getHeight())))
+                else if ((x <= rightForRightButton/2 + targetButton.getButton().getWidth()/2) &&
+                ((x >= rightForRightButton/2 - (targetButton.getButton().getWidth()/2)))
+                        && (y <= left && (y >= left - rightButton.getButton().getHeight())))
 
                 {
                     soundPool.play(laserBlastSound, 1,1,0,0,1);
@@ -638,7 +640,7 @@ public class Gameplay extends SurfaceView implements Runnable {
                     Log.i("Number of laser Shoots" + numberOfShoots, "+++++++++");
                     listOfRedLasers.add(new RedLaser((playerShip.getxCoordinate() + (playerShip.getBitmapWidth()/2)) - (redLaser.getRedLaser().getWidth()/2)
                             , playerShip.getyCoordinate()
-                            - targetButton.getTargetButton().getHeight() - playerShip.getRawPlayerShip().getHeight()));
+                            - targetButton.getButton().getHeight() - playerShip.getRawPlayerShip().getHeight()));
 
                 }
 
