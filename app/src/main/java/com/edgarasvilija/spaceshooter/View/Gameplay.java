@@ -1,4 +1,4 @@
-package com.edgarasvilija.spaceshooter;
+package com.edgarasvilija.spaceshooter.View;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,15 +15,16 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.edgarasvilija.spaceshooter.GameObjects.EnemyShip;
-import com.edgarasvilija.spaceshooter.GameObjects.EnemyShipLaserBlast;
-import com.edgarasvilija.spaceshooter.GameObjects.LaserBlast;
-import com.edgarasvilija.spaceshooter.GameObjects.LeftButton;
-import com.edgarasvilija.spaceshooter.GameObjects.Meteor;
-import com.edgarasvilija.spaceshooter.GameObjects.PlayerShip;
-import com.edgarasvilija.spaceshooter.GameObjects.RightButton;
-import com.edgarasvilija.spaceshooter.GameObjects.StopButton;
-import com.edgarasvilija.spaceshooter.GameObjects.TargetButton;
+import com.edgarasvilija.spaceshooter.GameActivity;
+import com.edgarasvilija.spaceshooter.Model.EnemyShip;
+import com.edgarasvilija.spaceshooter.Model.EnemyShipLaserBlast;
+import com.edgarasvilija.spaceshooter.Model.LaserBlast;
+import com.edgarasvilija.spaceshooter.Model.LeftButton;
+import com.edgarasvilija.spaceshooter.Model.Meteor;
+import com.edgarasvilija.spaceshooter.Model.PlayerShip;
+import com.edgarasvilija.spaceshooter.Model.RightButton;
+import com.edgarasvilija.spaceshooter.Model.StopButton;
+import com.edgarasvilija.spaceshooter.Model.TargetButton;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ import java.util.Random;
  * Created by Edgaras on 25/09/2016.
  */
 //this class will provide the view for the game
-public class GameView extends SurfaceView implements Runnable {
+public class Gameplay extends SurfaceView implements Runnable {
 
     GameActivity gameActivity;
 
@@ -99,7 +100,7 @@ public class GameView extends SurfaceView implements Runnable {
 
 //i could also use this
 //    public GameView(Context context, int x, int y, int rightForPlayerShip) {
-    public GameView(GameActivity gActivity, int x, int y, int rightForPlayerShip)
+    public Gameplay(GameActivity gActivity, int x, int y, int rightForPlayerShip)
     {
         super(gActivity);
         gameActivity = gActivity;
@@ -483,15 +484,15 @@ public class GameView extends SurfaceView implements Runnable {
             canvas.drawBitmap(meteor1.getBitmap(), meteor1.getX(), meteor1.getY(), paint);
             canvas.drawBitmap(meteor2.getBitmap(), meteor2.getX(), meteor2.getY(), paint);
 
-            //drawing the left button
+            //drawing the img_left_button button
             canvas.drawBitmap(leftButton.getBitmap(), right, left - leftButton.getBitmap().getHeight(), paint);
 
-            //drawing the right button
+            //drawing the img_right_button button
             canvas.drawBitmap(rightButton.getBitmap(), rightForRightButton -
                     rightButton.getBitmap().getWidth(), leftForRightButton -
                     rightButton.getBitmap().getHeight(), paint);
 
-         //   canvas.drawBitmap(targetButton.getBitmap(), ((right/2) - (targetButton.getBitmap().getWidth() - (targetButton.getBitmap().getWidth() *2))), left - targetButton.getBitmap().getHeight(), paint);
+         //   canvas.drawBitmap(targetButton.getBitmap(), ((img_right_button/2) - (targetButton.getBitmap().getWidth() - (targetButton.getBitmap().getWidth() *2))), img_left_button - targetButton.getBitmap().getHeight(), paint);
                 canvas.drawBitmap(targetButton.getBitmap(), ((rightForRightButton/2) - (targetButton.getBitmap().getWidth()/2)),
                 left - targetButton.getBitmap().getHeight(), paint);
 
@@ -506,19 +507,19 @@ public class GameView extends SurfaceView implements Runnable {
                         listOfLaserBlasts.get(i).getY(), paint);
             }
 
-            //paints enemy1 space ship laser blasts
+            //paints img_enemy_ship1 space ship laser blasts
             for (int i = 0; i < enemyShip1LaserBlasts.size(); i++)
             {
                 canvas.drawBitmap(enemyShip1LaserBlasts.get(i).getBitmap(), enemyShip1LaserBlasts.get(i).getX(),
                         enemyShip1LaserBlasts.get(i).getY(), paint);
             }
-            //paints enemy2 space ship laser blasts
+            //paints img_enemy_ship2 space ship laser blasts
             for (int i = 0; i < enemyShip2LaserBlasts.size(); i++)
             {
                 canvas.drawBitmap(enemyShip2LaserBlasts.get(i).getBitmap(), enemyShip2LaserBlasts.get(i).getX(),
                         enemyShip2LaserBlasts.get(i).getY(), paint);
             }
-            //paints enemy3 space ship laser blasts
+            //paints img_enemy_ship3 space ship laser blasts
             for (int i = 0; i < enemyShip3LaserBlasts.size(); i++)
             {
                 canvas.drawBitmap(enemyShip3LaserBlasts.get(i).getBitmap(), enemyShip3LaserBlasts.get(i).getX(),
@@ -535,7 +536,7 @@ public class GameView extends SurfaceView implements Runnable {
                 paint.setTextAlign(Paint.Align.RIGHT);
                 paint.setColor(Color.argb(255, 255, 255, 255));
                 paint.setTextSize(20);
-                canvas.drawText("Lives left: " + shieldsLeft, 10, 200, paint);
+                canvas.drawText("Lives img_left_button: " + shieldsLeft, 10, 200, paint);
             }
             //if the game ended then show this information for the user
              else
@@ -665,7 +666,7 @@ public class GameView extends SurfaceView implements Runnable {
 
             //player not touching the screen anymore
             case MotionEvent.ACTION_UP:
-                //when screen is stoped to be touched playersShip doesnt go right anymore
+                //when screen is stoped to be touched playersShip doesnt go img_right_button anymore
                 playerShip.standStill();
                 break;
         }

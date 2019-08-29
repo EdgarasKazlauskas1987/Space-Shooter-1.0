@@ -1,4 +1,4 @@
-package com.edgarasvilija.spaceshooter.GameObjects;
+package com.edgarasvilija.spaceshooter.Model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,35 +10,36 @@ import com.edgarasvilija.spaceshooter.R;
 /**
  * Created by Edgaras on 27/09/2016.
  */
-public class RightButton
+public class TargetButton
 {
-
-    Bitmap bitmapRight;
-    Bitmap resizedRight;
+    private Bitmap bitmapTarget;
+    public Bitmap resizedTarget;
 
     private int x;
     private int y;
 
     GameActivity gameActivity = new GameActivity();
 
-    public RightButton(Context context, int x, int y)
+    public TargetButton(Context context, int x, int y)
     {
 
-        bitmapRight = BitmapFactory.decodeResource(context.getResources(), R.drawable.right);
+        bitmapTarget = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_target);
         this.x = x;
         this.y = y;
 
         //counting 3procent of all screen area
         int areaSize = (int)(gameActivity.getArea()*(3.0f/100.0f));
+
         //counting root of areaSize variable
         int root = (int) Math.sqrt(areaSize);
 
-        resizedRight = Bitmap.createScaledBitmap(bitmapRight, root, root, true);
+        resizedTarget = Bitmap.createScaledBitmap(bitmapTarget, root, root, true);
+
     }
 
     public Bitmap getBitmap()
     {
-        return resizedRight;
+        return resizedTarget;
     }
 
     public int getX()
@@ -50,5 +51,6 @@ public class RightButton
     {
         return y;
     }
+
 
 }

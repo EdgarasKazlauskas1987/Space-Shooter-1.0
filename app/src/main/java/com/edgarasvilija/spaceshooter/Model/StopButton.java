@@ -1,46 +1,42 @@
-package com.edgarasvilija.spaceshooter.GameObjects;
+package com.edgarasvilija.spaceshooter.Model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 
 import com.edgarasvilija.spaceshooter.GameActivity;
 import com.edgarasvilija.spaceshooter.R;
 
 /**
- * Created by Edgaras on 27/09/2016.
+ * Created by Edgaras on 01/12/2016.
  */
-public class TargetButton
+public class StopButton
 {
-    private Bitmap bitmapTarget;
-    public Bitmap resizedTarget;
+    Bitmap stopButton;
+    Bitmap resizedStopButton;
 
     private int x;
     private int y;
 
     GameActivity gameActivity = new GameActivity();
 
-    public TargetButton(Context context, int x, int y)
+    public StopButton(Context context, int x, int y)
     {
-
-        bitmapTarget = BitmapFactory.decodeResource(context.getResources(), R.drawable.target);
+        stopButton = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_stop_button);
         this.x = x;
         this.y = y;
 
         //counting 3procent of all screen area
-        int areaSize = (int)(gameActivity.getArea()*(3.0f/100.0f));
-
+        int areaSize = (int)(gameActivity.getArea()*(1.0f/100.0f));
         //counting root of areaSize variable
         int root = (int) Math.sqrt(areaSize);
 
-        resizedTarget = Bitmap.createScaledBitmap(bitmapTarget, root, root, true);
-
+        resizedStopButton = Bitmap.createScaledBitmap(stopButton, root, root, true);
     }
 
     public Bitmap getBitmap()
     {
-        return resizedTarget;
+        return resizedStopButton;
     }
 
     public int getX()
@@ -52,6 +48,5 @@ public class TargetButton
     {
         return y;
     }
-
 
 }

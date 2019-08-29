@@ -1,9 +1,8 @@
-package com.edgarasvilija.spaceshooter.GameObjects;
+package com.edgarasvilija.spaceshooter.Model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 
 import com.edgarasvilija.spaceshooter.GameActivity;
 import com.edgarasvilija.spaceshooter.R;
@@ -23,8 +22,7 @@ public class LeftButton
 
     public LeftButton(Context context, int x, int y)
     {
-
-        bitmapLeft = BitmapFactory.decodeResource(context.getResources(), R.drawable.left);
+        bitmapLeft = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_left_button);
         this.x = x;
         this.y = y;
 

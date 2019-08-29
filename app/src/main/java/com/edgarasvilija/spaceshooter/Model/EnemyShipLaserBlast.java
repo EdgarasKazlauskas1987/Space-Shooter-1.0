@@ -1,4 +1,4 @@
-package com.edgarasvilija.spaceshooter.GameObjects;
+package com.edgarasvilija.spaceshooter.Model;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,8 +15,8 @@ public class EnemyShipLaserBlast
     private int x;
     private int y;
 
-    Bitmap enemyShipLaserblastBitmap;
-    Bitmap resizedEnemyShipLaserblastBitmap;//after size adjusted according to screen area
+    private Bitmap enemyShipLaserblastBitmap;
+    private Bitmap resizedEnemyShipLaserblastBitmap;//after size adjusted according to screen area
 
     private Rect enemyShipLaserBlastRect;
 
@@ -25,24 +25,19 @@ public class EnemyShipLaserBlast
 
     public EnemyShipLaserBlast (GameActivity ga, int x, int y)
     {
-        //can also do like it is in LaserBlast class
         gameActivity = ga;
-        enemyShipLaserblastBitmap = BitmapFactory.decodeResource(gameActivity.getContext().getResources(), R.drawable.enemylaser);
+        enemyShipLaserblastBitmap = BitmapFactory.decodeResource(gameActivity.getContext().getResources(), R.drawable.img_blue_laser);
 
         this.x = x;
         this.y = y;
-
 
         //counting 3procent of all screen area
         int areaSize = (int)(gameActivity.getArea()*(0.5f/100.0f));
         //counting root of areaSize variable
         float root = (float) Math.sqrt(areaSize);
 
-
         resizedEnemyShipLaserblastBitmap = Bitmap.createScaledBitmap(enemyShipLaserblastBitmap,(int) root, (int) root, true);
-
         enemyShipLaserBlastRect = new Rect(x, y, resizedEnemyShipLaserblastBitmap.getWidth(), resizedEnemyShipLaserblastBitmap.getHeight());
-
     }
 
     public Bitmap getBitmap()
@@ -74,7 +69,6 @@ public class EnemyShipLaserBlast
         enemyShipLaserBlastRect.top = y;
         enemyShipLaserBlastRect.right = x + resizedEnemyShipLaserblastBitmap.getWidth();
         enemyShipLaserBlastRect.bottom = y + resizedEnemyShipLaserblastBitmap.getHeight();
-
     }
 
     public Rect getEnemyShipLaserBlastRect(){

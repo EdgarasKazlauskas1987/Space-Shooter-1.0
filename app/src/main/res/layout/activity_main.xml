@@ -8,12 +8,12 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="20dp"
     tools:context="com.edgarasvilija.spaceshooter.MainActivity"
-    android:background="@drawable/background">
+    android:background="@drawable/img_background">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/logo"
+        android:src="@drawable/img_logo"
         android:layout_above="@+id/playButton" />
     <Button
         android:layout_width="wrap_content"

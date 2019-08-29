@@ -1,4 +1,4 @@
-package com.edgarasvilija.spaceshooter.GameObjects;
+package com.edgarasvilija.spaceshooter.Model;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,18 +14,17 @@ public class LaserBlast
 {
     GameActivity gameActivity = new GameActivity();
 
-    Bitmap laserblastBitmap;
-    Bitmap resizedLaserblast;
+    private Bitmap laserblastBitmap;
+    private Bitmap resizedLaserblast;
 
     private int x;
     private int y = 60;
 
     private Rect hitBox;
 
-
     public LaserBlast (int x, int y)
     {
-        laserblastBitmap = BitmapFactory.decodeResource(gameActivity.getContext().getResources(), R.drawable.laserblast);
+        laserblastBitmap = BitmapFactory.decodeResource(gameActivity.getContext().getResources(), R.drawable.img_red_laser);
 
         this.x = x;
         this.y = y;
@@ -75,5 +74,4 @@ public class LaserBlast
     public Rect getHitbox(){
         return hitBox;
     }
-
 }

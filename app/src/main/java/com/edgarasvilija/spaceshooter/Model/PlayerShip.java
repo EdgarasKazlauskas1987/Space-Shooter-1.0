@@ -1,11 +1,9 @@
-package com.edgarasvilija.spaceshooter.GameObjects;
+package com.edgarasvilija.spaceshooter.Model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.util.Log;
 
 import com.edgarasvilija.spaceshooter.GameActivity;
 import com.edgarasvilija.spaceshooter.R;
@@ -42,7 +40,7 @@ public class PlayerShip
     {
 
         speed = 1;
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.playership);
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_player_ship);
 
         //counting 3procent of all screen area
         int areaSize = (int)(gameActivity.getArea()*(2.5f/100.0f));
@@ -67,12 +65,12 @@ public class PlayerShip
         //y--;
         if (goingRight)
         {
-            //playerShip goes right
+            //playerShip goes img_right_button
             x += 1 * (gameActivity.getXpart() / 2) *deltaTime;
         }
 
         else if (goingLeft){
-            //playerShip goes back to right
+            //playerShip goes back to img_right_button
             x -= 1 * (gameActivity.getXpart() / 2) *deltaTime;
         }
 
@@ -132,14 +130,14 @@ public class PlayerShip
         return y;
     }
 
-    //move ship to right
+    //move ship to img_right_button
     public void goRight()
     {
         goingRight = true;
         goingLeft = false;
     }
 
-    //move ship to left
+    //move ship to img_left_button
     public void goLeft()
     {
         goingLeft = true;

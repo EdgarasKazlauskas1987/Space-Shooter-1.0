@@ -1,4 +1,4 @@
-package com.edgarasvilija.spaceshooter.GameObjects;
+package com.edgarasvilija.spaceshooter.Model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -28,7 +28,7 @@ public class Meteor
     public Meteor(Context context, int x, int y)
     {
 
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.meteor2);
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_meteor);
         //counting 3procent of all screen area
         int areaSize = (int)(gameActivity.getArea()*(0.5f/100.0f));
         //counting root of areaSize variable

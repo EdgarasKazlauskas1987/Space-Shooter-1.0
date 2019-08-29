@@ -4,19 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Display;
-import android.view.SurfaceView;
-import android.view.View;
+
+import com.edgarasvilija.spaceshooter.View.Gameplay;
 
 
 public class GameActivity extends Activity {
 
-    private GameView gameView;
+    private Gameplay gameplay;
 
     //these will be used to see what size is the screen
     public static int screenXsize;
@@ -42,10 +37,10 @@ public class GameActivity extends Activity {
         screenYsize = screenSize.y;
 
 
-        gameView = new GameView(this, screenSize.x, screenSize.y, screenSize.x);
+        gameplay = new Gameplay(this, screenSize.x, screenSize.y, screenSize.x);
 
         //making our game view the view for the activity
-        setContentView(gameView);
+        setContentView(gameplay);
             }
 
     //uses method from GameView class
@@ -53,7 +48,7 @@ public class GameActivity extends Activity {
     protected void onPause()
     {
         super.onPause();
-        gameView.pause();
+        gameplay.pause();
     }
 
     //uses method from GameView  class
@@ -61,7 +56,7 @@ public class GameActivity extends Activity {
     protected void onResume()
     {
         super.onResume();
-        gameView.resume();
+        gameplay.resume();
     }
 
 
