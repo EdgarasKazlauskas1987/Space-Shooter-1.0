@@ -18,7 +18,6 @@ public class MainActivity extends Activity implements View.OnClickListener
         setContentView(R.layout.activity_main);
 
         SharedPreferences prefs;
-        SharedPreferences.Editor editor;
 
         prefs = getSharedPreferences("HiScores", MODE_PRIVATE);
 
@@ -27,24 +26,22 @@ public class MainActivity extends Activity implements View.OnClickListener
         int bestResult = prefs.getInt("highestScore", 1);
         textFastestTime.setText("Best Result:  " + bestResult);
 
-        //get reference to button in layout
+        //Getting reference to Play button in layout
         final Button playButton = (Button)findViewById(R.id.playButton);
-
-        //listen for clicks
+        //Listening for clicks
         playButton.setOnClickListener(this);
     }
 
-    //here we say what happends when playButton is clicked
+    //After clicking Play button
     @Override
     public void onClick(View view)
     {
-
-        //Intent object will let us swich between activities
+        //Intent object will let us switch between activities
         Intent intent = new Intent(this, GameActivity.class);
-        //here we will start the new activity
+        //Starting new activity
         startActivity(intent);
 
-        //here we will finish  this(layout) activity
+        //Finishing this(layout) activity
         finish();
     }
 }
