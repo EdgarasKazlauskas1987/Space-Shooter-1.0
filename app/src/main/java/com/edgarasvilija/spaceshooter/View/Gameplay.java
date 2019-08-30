@@ -2,14 +2,10 @@ package com.edgarasvilija.spaceshooter.View;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -26,8 +22,8 @@ import com.edgarasvilija.spaceshooter.Model.RightButton;
 import com.edgarasvilija.spaceshooter.Model.StopButton;
 import com.edgarasvilija.spaceshooter.Model.TargetButton;
 import com.edgarasvilija.spaceshooter.R;
+import com.edgarasvilija.spaceshooter.Settings.AudioConfiguration;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -76,17 +72,13 @@ public class Gameplay extends SurfaceView implements Runnable {
 
     private int framesPerSecond = 0;
 
-    //Sound configuration
-    private SoundPool soundPool;
-    int explosionSound = -1;
-    int destroyedSound = -1;
-    int hitSound = -1;
-    int laserBlastSound = -1;
 
     public static ArrayList<RedLaser> listOfRedLasers = new ArrayList<>() ;
     public static ArrayList<BlueLaser> enemyShip1LaserBlasts = new ArrayList<>();
     public static ArrayList<BlueLaser> enemyShip2LaserBlasts = new ArrayList<>();
     public static ArrayList<BlueLaser> enemyShip3LaserBlasts = new ArrayList<>();
+
+    AudioConfiguration audioConfig;
 
     public Gameplay(GameActivity gameActivity, int x, int y, int rightForPlayerShip)
     {
@@ -99,7 +91,6 @@ public class Gameplay extends SurfaceView implements Runnable {
         highestScoreWritter = highestScoreLoader.edit();
         //getting fastest time from entry, if its not there then result is 0
         highestScore = highestScoreLoader.getInt("highestScore", 0);
-
 
         right = 0;
         left = y;
@@ -134,29 +125,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         listOfRedLasers = new ArrayList<>();
         enemyShip1LaserBlasts = new ArrayList<>();
 
-        soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        try {
-            AssetManager assetManager = context.getAssets();
-            AssetFileDescriptor assetFileDescriptor;
-
-            //Setting game sounds
-            assetFileDescriptor = assetManager.openFd("collision.ogg");
-            destroyedSound = soundPool.load(assetFileDescriptor, 0);
-
-            assetFileDescriptor = assetManager.openFd("explosion.ogg");
-            explosionSound = soundPool.load(assetFileDescriptor, 0);
-
-            assetFileDescriptor = assetManager.openFd("hit.ogg");
-            hitSound = soundPool.load(assetFileDescriptor, 0);
-
-            assetFileDescriptor = assetManager.openFd("laserShot.ogg");
-            laserBlastSound = soundPool.load(assetFileDescriptor, 0);
-        }
-
-        catch (IOException e)
-        {
-
-        }
+        audioConfig = new AudioConfiguration(context);
     }
 
     @Override
@@ -250,7 +219,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         //enemy ship is destroyed
 
         if (Rect.intersects(enemyShip1.getEnemyShipRect(), playerShip.getHitBox())) {
-            soundPool.play(explosionSound, 1, 1, 0, 0, 1);
+            audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
             enemyShip1.setyCoordinate(0);
             shieldsLeft--;
             decrementPointsScored();
@@ -261,7 +230,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         }
 
         if (Rect.intersects(enemyShip2.getEnemyShipRect(), playerShip.getHitBox())) {
-            soundPool.play(explosionSound, 1, 1, 0, 0, 1);
+            audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
             enemyShip2.setyCoordinate(0);
             shieldsLeft--;
             decrementPointsScored();
@@ -272,7 +241,7 @@ public class Gameplay extends SurfaceView implements Runnable {
 
         }
         if (Rect.intersects(enemyShip3.getEnemyShipRect(), playerShip.getHitBox())) {
-            soundPool.play(explosionSound, 1, 1, 0, 0, 1);
+            audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
             enemyShip3.setyCoordinate(0);
             shieldsLeft--;
             decrementPointsScored();
@@ -286,7 +255,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         //if so the player looses 1 shield and meteor dissapers
         //also checking if player still have shields, if not then game over
         if (Rect.intersects(meteor1.getHitBox(), playerShip.getHitBox())) {
-            soundPool.play(explosionSound, 1, 1, 0, 0, 1);
+            audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
             meteor1.setYCoorinate();
             shieldsLeft--;
             if (shieldsLeft < 0) {
@@ -295,7 +264,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         }
 
         if (Rect.intersects(meteor2.getHitBox(), playerShip.getHitBox())) {
-            soundPool.play(explosionSound, 1, 1, 0, 0, 1);
+            audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
             meteor2.setYCoorinate();
             shieldsLeft--;
             if (shieldsLeft < 0) {
@@ -307,7 +276,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         //if so then player looses 1 shield and 1 point
         for (int i = 0; i < enemyShip1LaserBlasts.size(); i++) {
             if (Rect.intersects(playerShip.getHitBox(), enemyShip1LaserBlasts.get(i).getRectLaser())) {
-                soundPool.play(hitSound, 1, 1, 0, 0, 1);
+                audioConfig.getSoundPool().play(audioConfig.getHitSound(), 1, 1, 0, 0, 1);
                 enemyShip1LaserBlasts.get(i).setCoordinateY();
                 decrementPointsScored();
                 shieldsLeft--;
@@ -319,7 +288,7 @@ public class Gameplay extends SurfaceView implements Runnable {
 
         for (int i = 0; i < enemyShip2LaserBlasts.size(); i++) {
             if (Rect.intersects(playerShip.getHitBox(), enemyShip2LaserBlasts.get(i).getRectLaser())) {
-                soundPool.play(hitSound, 1, 1, 0, 0, 1);
+                audioConfig.getSoundPool().play(audioConfig.getHitSound(), 1, 1, 0, 0, 1);
                 enemyShip2LaserBlasts.get(i).setCoordinateY();
                 decrementPointsScored();
                 shieldsLeft--;
@@ -331,7 +300,7 @@ public class Gameplay extends SurfaceView implements Runnable {
 
         for (int i = 0; i < enemyShip3LaserBlasts.size(); i++) {
             if (Rect.intersects(playerShip.getHitBox(), enemyShip3LaserBlasts.get(i).getRectLaser())) {
-                soundPool.play(hitSound, 1, 1, 0, 0, 1);
+                audioConfig.getSoundPool().play(audioConfig.getHitSound(), 1, 1, 0, 0, 1);
                 enemyShip3LaserBlasts.get(i).setCoordinateY();
                 decrementPointsScored();
                 shieldsLeft--;
@@ -346,21 +315,21 @@ public class Gameplay extends SurfaceView implements Runnable {
         for (int i = 0; i < listOfRedLasers.size(); i++) {
 
             if (Rect.intersects(enemyShip1.getEnemyShipRect(), listOfRedLasers.get(i).getRectLaser())) {
-                soundPool.play(explosionSound, 1, 1, 0, 0, 1);
+                audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
                 listOfRedLasers.get(i).setCoordinateY();
                 enemyShip1.setyCoordinate(0);
                 pointsScored++;
             }
 
             if (Rect.intersects(enemyShip2.getEnemyShipRect(), listOfRedLasers.get(i).getRectLaser())) {
-                soundPool.play(explosionSound, 1, 1, 0, 0, 1);
+                audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
                 listOfRedLasers.get(i).setCoordinateY();
                 enemyShip2.setyCoordinate(0);
                 pointsScored++;
             }
 
             if (Rect.intersects(enemyShip3.getEnemyShipRect(), listOfRedLasers.get(i).getRectLaser())) {
-                soundPool.play(explosionSound, 1, 1, 0, 0, 1);
+                audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
                 listOfRedLasers.get(i).setCoordinateY();
                 enemyShip3.setyCoordinate(0);
                 pointsScored++;
@@ -526,7 +495,7 @@ public class Gameplay extends SurfaceView implements Runnable {
                         && (y <= left && (y >= left - rightButton.getButton().getHeight())))
 
                 {
-                    soundPool.play(laserBlastSound, 1,1,0,0,1);
+                    audioConfig.getSoundPool().play(audioConfig.getLaserBlastSound(), 1,1,0,0,1);
                     numberOfShoots++;
                     if (numberOfShoots > 150)
                     {

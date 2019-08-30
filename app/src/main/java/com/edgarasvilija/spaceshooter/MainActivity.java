@@ -40,7 +40,6 @@ public class MainActivity extends Activity implements View.OnClickListener
         Intent intent = new Intent(this, GameActivity.class);
         //Starting new activity
         startActivity(intent);
-
         //Finishing this(layout) activity
         finish();
     }
