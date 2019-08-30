@@ -31,33 +31,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-/**
- * Created by Edgaras on 25/09/2016.
- */
-//this class will provide the view for the game
+
 public class Gameplay extends SurfaceView implements Runnable {
 
     GameActivity gameActivity;
-
     Context context;
 
 
-    private SharedPreferences prefs; //used to load highest score if it exists
-    private SharedPreferences.Editor editor; // writtes actual result into file
-    private int bestResult; // best result will be kept here
+    private SharedPreferences highestScoreLoader;
+    private SharedPreferences.Editor highestScoreWritter;
+    private int highestScore;
 
-    //volatile variable can be used by multiple threads and also outside a thread
-    volatile boolean playing;
-    volatile boolean gameEnded = false;
-    volatile static int pointsScored;
-    volatile static int shieldsLeft;
-    volatile static int numberOfShoots;
+    private volatile boolean playing;
+    private volatile boolean gameEnded = false;
+    private volatile static int pointsScored;
+    private volatile static int shieldsLeft;
+    private volatile static int numberOfShoots;
 
     Thread gameThread = null;
 
-    Random placeGenerator = new Random();
+    private Random randomGenerator = new Random();
 
-    //game object
     private PlayerShip playerShip;
     private LeftButton leftButton;
     private RightButton rightButton;
@@ -67,11 +61,9 @@ public class Gameplay extends SurfaceView implements Runnable {
     private EnemyShip enemyShip1;
     private EnemyShip enemyShip2;
     private EnemyShip enemyShip3;
-
     private Meteor meteor1;
     private Meteor meteor2;
 
-    //for drawing
     private Paint paint;
     private Canvas canvas;
     private SurfaceHolder surfaceHolder;
@@ -83,36 +75,30 @@ public class Gameplay extends SurfaceView implements Runnable {
     public int left;
 
     private int framesPerSecond = 0;
-    public static Random random = new Random();
 
-    //This is for dealing with sounds
+    //Sound configuration
     private SoundPool soundPool;
     int explosionSound = -1;
     int destroyedSound = -1;
     int hitSound = -1;
     int laserBlastSound = -1;
 
-    //list of players laser blasts
     public static ArrayList<RedLaser> listOfRedLasers = new ArrayList<>() ;
-    //list of enemy ships laser blasts
     public static ArrayList<BlueLaser> enemyShip1LaserBlasts = new ArrayList<>();
     public static ArrayList<BlueLaser> enemyShip2LaserBlasts = new ArrayList<>();
     public static ArrayList<BlueLaser> enemyShip3LaserBlasts = new ArrayList<>();
 
-//i could also use this
-//    public GameView(Context context, int x, int y, int rightForPlayerShip) {
-    public Gameplay(GameActivity gActivity, int x, int y, int rightForPlayerShip)
+    public Gameplay(GameActivity gameActivity, int x, int y, int rightForPlayerShip)
     {
-        super(gActivity);
-        gameActivity = gActivity;
-        this.context = gActivity;
-        //this.context = context;
+        super(gameActivity);
+        this.gameActivity = gameActivity;
+        this.context = gameActivity;
 
         //getting file and if it does not exist creating it
-        prefs = context.getSharedPreferences("HiScores", context.MODE_PRIVATE);
-        editor = prefs.edit();
+        highestScoreLoader = context.getSharedPreferences("HiScores", context.MODE_PRIVATE);
+        highestScoreWritter = highestScoreLoader.edit();
         //getting fastest time from entry, if its not there then result is 0
-        bestResult = prefs.getInt("highestScore", 0);
+        highestScore = highestScoreLoader.getInt("highestScore", 0);
 
 
         right = 0;
@@ -132,21 +118,19 @@ public class Gameplay extends SurfaceView implements Runnable {
         pointsScored = 0;
         shieldsLeft = 3;
         numberOfShoots = 0;
+
         playerShip = new PlayerShip(context, rightForRightButton/2 , leftForRightButton); //x y
         leftButton = new LeftButton(context, rightForRightButton, 0, R.drawable.img_left_button);
         rightButton = new RightButton(context, rightForRightButton, 0, R.drawable.img_right_button);
         targetButton = new TargetButton(context, rightForRightButton, leftForRightButton, R.drawable.img_target);
         stopButton = new StopButton(context, rightForRightButton, leftForRightButton, R.drawable.img_stop_button);
 
-
-
-
         enemyShip1 = new EnemyShip(context, 5, 0);
         enemyShip2 = new EnemyShip(context, 5, 0);
         enemyShip3 = new EnemyShip(context, 5, 0);
         redLaser = new RedLaser(gameActivity, rightForRightButton ,leftForRightButton, R.drawable.img_red_laser);
-        meteor1 = new Meteor(context, placeGenerator.nextInt(gameActivity.getScreenSizeX() + 1), 0);
-        meteor2 = new Meteor(context, placeGenerator.nextInt(gameActivity.getScreenSizeX() + 1), 0);
+        meteor1 = new Meteor(context, randomGenerator.nextInt(gameActivity.getScreenSizeX() + 1), 0);
+        meteor2 = new Meteor(context, randomGenerator.nextInt(gameActivity.getScreenSizeX() + 1), 0);
         listOfRedLasers = new ArrayList<>();
         enemyShip1LaserBlasts = new ArrayList<>();
 
@@ -155,7 +139,7 @@ public class Gameplay extends SurfaceView implements Runnable {
             AssetManager assetManager = context.getAssets();
             AssetFileDescriptor assetFileDescriptor;
 
-            //4 sound of the game
+            //Setting game sounds
             assetFileDescriptor = assetManager.openFd("collision.ogg");
             destroyedSound = soundPool.load(assetFileDescriptor, 0);
 
@@ -171,29 +155,20 @@ public class Gameplay extends SurfaceView implements Runnable {
 
         catch (IOException e)
         {
-            //do nothing
+
         }
-
-
     }
 
     @Override
     public void run()
     {
-
-        //try to measure everything in this method
-
-        //not sure what is that
-        //Looper.prepare();
-
         int frames = 0;
         long startTime = System.nanoTime();
         long currTime = 0;
         long lastTime = System.nanoTime();
 
-        while (playing)
-        {
-            //here we get current time
+        while (playing) {
+            //Getting current time
             currTime = System.nanoTime();   //1  //2
             //here we calculate the difference between current time and last time
             //this helps to see how much time does it take to do update() method
@@ -208,40 +183,34 @@ public class Gameplay extends SurfaceView implements Runnable {
             //more positions (x5 time more). See the code in enemyShip class
             //where I use deltaTime which is the difference between currentTime
             //and lastTime
-            update((currTime - lastTime)/ 1000000000.0f); //updates the game data
+            update((currTime - lastTime) / 1000000000.0f); //updates the game data
             //here we are setting lastTime
             lastTime = currTime; //1
 
-            draw(); //draws the screen based on the game data
+            draw();
 
             generateRandomNumber(enemyShip1LaserBlasts, enemyShip1.getxCoordinate(), enemyShip1.getyCoordinate());
             generateRandomNumber(enemyShip2LaserBlasts, enemyShip2.getxCoordinate(), enemyShip2.getyCoordinate());
             generateRandomNumber(enemyShip3LaserBlasts, enemyShip3.getxCoordinate(), enemyShip3.getyCoordinate());
 
-
             frames = frames + 1;
-            if (System.nanoTime() - startTime > 100000000)
-            {
+            if (System.nanoTime() - startTime > 100000000) {
                 framesPerSecond = frames;
                 frames = 0;
                 startTime = System.nanoTime();
             }
         }
-
     }
 
     private void update(float deltaTime)
     {
-
         decrementPointsScored();
 
         playerShip.update(deltaTime, left - targetButton.getButton().getHeight() - playerShip.getRawPlayerShip().getHeight());
 
-        //updating enemyship
         enemyShip1.update(deltaTime);
         enemyShip2.update(deltaTime);
         enemyShip3.update(deltaTime);
-
         meteor1.update(deltaTime);
         meteor2.update(deltaTime);
 
@@ -249,285 +218,223 @@ public class Gameplay extends SurfaceView implements Runnable {
         //checks if laser blasts are still within the screen
         //and if they leave the screen they are removed from arrayList
         //if they are still on screen they are updated
-        for (int i = 0; i < enemyShip1LaserBlasts.size(); i++ )
-        {
-            if (enemyShip1LaserBlasts.get(i).getCoordinateY() > gameActivity.getScreenSizeY())
-            {
+        for (int i = 0; i < enemyShip1LaserBlasts.size(); i++) {
+            if (enemyShip1LaserBlasts.get(i).getCoordinateY() > gameActivity.getScreenSizeY()) {
                 enemyShip1LaserBlasts.remove(enemyShip1LaserBlasts.get(i));
 
-            }
-
-            else
-            {
+            } else {
                 enemyShip1LaserBlasts.get(i).update(deltaTime);
             }
         }
 
-        for (int i = 0; i < enemyShip2LaserBlasts.size(); i++ )
-        {
-            if (enemyShip2LaserBlasts.get(i).getCoordinateY() > gameActivity.getScreenSizeY())
-            {
+        for (int i = 0; i < enemyShip2LaserBlasts.size(); i++) {
+            if (enemyShip2LaserBlasts.get(i).getCoordinateY() > gameActivity.getScreenSizeY()) {
                 enemyShip2LaserBlasts.remove(enemyShip2LaserBlasts.get(i));
 
-            }
-
-            else {
+            } else {
                 enemyShip2LaserBlasts.get(i).update(deltaTime);
             }
         }
 
-        for (int i = 0; i < enemyShip3LaserBlasts.size(); i++ )
-        {
-            if (enemyShip3LaserBlasts.get(i).getCoordinateY() > gameActivity.getScreenSizeY())
-            {
+        for (int i = 0; i < enemyShip3LaserBlasts.size(); i++) {
+            if (enemyShip3LaserBlasts.get(i).getCoordinateY() > gameActivity.getScreenSizeY()) {
                 enemyShip3LaserBlasts.remove(enemyShip3LaserBlasts.get(i));
 
-            }
-
-            else {
+            } else {
                 enemyShip3LaserBlasts.get(i).update(deltaTime);
             }
         }
 
-
-        //cheking if enemy ship and players ship collides with each other
+        //checking if enemy ship and players ship collides with each other
         //if they collide then player looses 1 shield and 1 point
         //enemy ship is destroyed
 
-        if (Rect.intersects(enemyShip1.getEnemyShipRect(), playerShip.getHitBox()))
-        {
-            soundPool.play(explosionSound, 1,1,0,0,1);
+        if (Rect.intersects(enemyShip1.getEnemyShipRect(), playerShip.getHitBox())) {
+            soundPool.play(explosionSound, 1, 1, 0, 0, 1);
             enemyShip1.setyCoordinate(0);
             shieldsLeft--;
             decrementPointsScored();
-            if (shieldsLeft <0)
-            {
+            if (shieldsLeft < 0) {
                 gameEnded = true;
             }
             //gameEnded = true;
-
         }
 
-        if (Rect.intersects(enemyShip2.getEnemyShipRect(), playerShip.getHitBox()))
-        {
-            soundPool.play(explosionSound, 1,1,0,0,1);
+        if (Rect.intersects(enemyShip2.getEnemyShipRect(), playerShip.getHitBox())) {
+            soundPool.play(explosionSound, 1, 1, 0, 0, 1);
             enemyShip2.setyCoordinate(0);
             shieldsLeft--;
             decrementPointsScored();
-            if (shieldsLeft <0)
-            {
+            if (shieldsLeft < 0) {
                 gameEnded = true;
             }
             //gameEnded = true;
 
         }
-        if (Rect.intersects(enemyShip3.getEnemyShipRect(), playerShip.getHitBox()))
-        {
-            soundPool.play(explosionSound, 1,1,0,0,1);
+        if (Rect.intersects(enemyShip3.getEnemyShipRect(), playerShip.getHitBox())) {
+            soundPool.play(explosionSound, 1, 1, 0, 0, 1);
             enemyShip3.setyCoordinate(0);
             shieldsLeft--;
             decrementPointsScored();
-            if (shieldsLeft <0)
-            {
+            if (shieldsLeft < 0) {
                 gameEnded = true;
             }
             //gameEnded = true;
         }
 
-        //cheking if player's ship collides with meteors
+        //checking if player's ship collides with meteors
         //if so the player looses 1 shield and meteor dissapers
-        //also cheking if player still have shields, if not then game over
-        if (Rect.intersects(meteor1.getHitBox(), playerShip.getHitBox()))
-        {
-            soundPool.play(explosionSound, 1,1,0,0,1);
+        //also checking if player still have shields, if not then game over
+        if (Rect.intersects(meteor1.getHitBox(), playerShip.getHitBox())) {
+            soundPool.play(explosionSound, 1, 1, 0, 0, 1);
             meteor1.setYCoorinate();
             shieldsLeft--;
-            if (shieldsLeft <0)
-            {
-                 gameEnded = true;
-            }
-
-        }
-
-        if (Rect.intersects(meteor2.getHitBox(), playerShip.getHitBox()))
-        {
-            soundPool.play(explosionSound, 1,1,0,0,1);
-            meteor2.setYCoorinate();
-            shieldsLeft--;
-            if (shieldsLeft <0)
-            {
+            if (shieldsLeft < 0) {
                 gameEnded = true;
             }
         }
 
+        if (Rect.intersects(meteor2.getHitBox(), playerShip.getHitBox())) {
+            soundPool.play(explosionSound, 1, 1, 0, 0, 1);
+            meteor2.setYCoorinate();
+            shieldsLeft--;
+            if (shieldsLeft < 0) {
+                gameEnded = true;
+            }
+        }
 
-        //cheking if enemy ship laser blasts have hit the players space ship
+        //checking if enemy ship laser blasts have hit the players space ship
         //if so then player looses 1 shield and 1 point
-        for (int i = 0; i < enemyShip1LaserBlasts.size(); i++)
-        {
-            if (Rect.intersects(playerShip.getHitBox(), enemyShip1LaserBlasts.get(i).getRectLaser()))
-            {
-                soundPool.play(hitSound, 1,1,0,0,1);
+        for (int i = 0; i < enemyShip1LaserBlasts.size(); i++) {
+            if (Rect.intersects(playerShip.getHitBox(), enemyShip1LaserBlasts.get(i).getRectLaser())) {
+                soundPool.play(hitSound, 1, 1, 0, 0, 1);
                 enemyShip1LaserBlasts.get(i).setCoordinateY();
                 decrementPointsScored();
                 shieldsLeft--;
-                if (shieldsLeft <0)
-                {
+                if (shieldsLeft < 0) {
                     gameEnded = true;
                 }
             }
         }
 
-        for (int i = 0; i < enemyShip2LaserBlasts.size(); i++)
-        {
-            if (Rect.intersects(playerShip.getHitBox(), enemyShip2LaserBlasts.get(i).getRectLaser()))
-            {
-                soundPool.play(hitSound, 1,1,0,0,1);
+        for (int i = 0; i < enemyShip2LaserBlasts.size(); i++) {
+            if (Rect.intersects(playerShip.getHitBox(), enemyShip2LaserBlasts.get(i).getRectLaser())) {
+                soundPool.play(hitSound, 1, 1, 0, 0, 1);
                 enemyShip2LaserBlasts.get(i).setCoordinateY();
                 decrementPointsScored();
                 shieldsLeft--;
-                if (shieldsLeft <0)
-                {
+                if (shieldsLeft < 0) {
                     gameEnded = true;
                 }
             }
         }
 
-        for (int i = 0; i < enemyShip3LaserBlasts.size(); i++)
-        {
-            if (Rect.intersects(playerShip.getHitBox(), enemyShip3LaserBlasts.get(i).getRectLaser()))
-            {
-                soundPool.play(hitSound, 1,1,0,0,1);
+        for (int i = 0; i < enemyShip3LaserBlasts.size(); i++) {
+            if (Rect.intersects(playerShip.getHitBox(), enemyShip3LaserBlasts.get(i).getRectLaser())) {
+                soundPool.play(hitSound, 1, 1, 0, 0, 1);
                 enemyShip3LaserBlasts.get(i).setCoordinateY();
                 decrementPointsScored();
                 shieldsLeft--;
-                if (shieldsLeft <0)
-                {
+                if (shieldsLeft < 0) {
                     gameEnded = true;
                 }
             }
         }
 
-
-        //cheking if players laser blast has hit enemy's space ship
+        //checking if players laser blast has hit enemy's space ship
         //if so then player gets 1 point, and enemy ship is destroyed
-        for (int i = 0; i < listOfRedLasers.size(); i ++)
-        {
+        for (int i = 0; i < listOfRedLasers.size(); i++) {
 
-            if (Rect.intersects(enemyShip1.getEnemyShipRect(), listOfRedLasers.get(i).getRectLaser()))
-
-            {
-                soundPool.play(explosionSound, 1,1,0,0,1);
+            if (Rect.intersects(enemyShip1.getEnemyShipRect(), listOfRedLasers.get(i).getRectLaser())) {
+                soundPool.play(explosionSound, 1, 1, 0, 0, 1);
                 listOfRedLasers.get(i).setCoordinateY();
                 enemyShip1.setyCoordinate(0);
                 pointsScored++;
-
             }
 
-            if (Rect.intersects(enemyShip2.getEnemyShipRect(), listOfRedLasers.get(i).getRectLaser()))
-
-            {
-                soundPool.play(explosionSound, 1,1,0,0,1);
+            if (Rect.intersects(enemyShip2.getEnemyShipRect(), listOfRedLasers.get(i).getRectLaser())) {
+                soundPool.play(explosionSound, 1, 1, 0, 0, 1);
                 listOfRedLasers.get(i).setCoordinateY();
                 enemyShip2.setyCoordinate(0);
                 pointsScored++;
-
             }
 
-            if (Rect.intersects(enemyShip3.getEnemyShipRect(), listOfRedLasers.get(i).getRectLaser()))
-
-            {
-                soundPool.play(explosionSound, 1,1,0,0,1);
+            if (Rect.intersects(enemyShip3.getEnemyShipRect(), listOfRedLasers.get(i).getRectLaser())) {
+                soundPool.play(explosionSound, 1, 1, 0, 0, 1);
                 listOfRedLasers.get(i).setCoordinateY();
                 enemyShip3.setyCoordinate(0);
                 pointsScored++;
-
             }
 
             //if players space ship's laser blast is out of the screen
             //then remove it, otherwise - update it's position
-            if (listOfRedLasers.get(i).getCoordinateY() < 0)
-            {
+            if (listOfRedLasers.get(i).getCoordinateY() < 0) {
                 listOfRedLasers.remove(listOfRedLasers.get(i));
 
-            }
-
-            else {
+            } else {
                 listOfRedLasers.get(i).update(deltaTime);
             }
-
         }
-
     }
 
     private void draw()
     {
-
         if (surfaceHolder.getSurface().isValid())
         {
-
             canvas = surfaceHolder.lockCanvas();
-
             canvas.drawColor(Color.argb(255, 0, 0, 0));
 
-            // drawing players ship
-            canvas.drawBitmap(playerShip.getRawPlayerShip(), playerShip.getxCoordinate()  ,
+            //Draw players ship
+            canvas.drawBitmap(playerShip.getRawPlayerShip(), playerShip.getxCoordinate(),
                     left - targetButton.getButton().getHeight() - playerShip.getRawPlayerShip().getHeight(), paint);
 
-
-            //drawing enemy ships
+            //Draw enemy ships
             canvas.drawBitmap(enemyShip1.getRawEnemyShip(), enemyShip1.getxCoordinate(), enemyShip1.getyCoordinate(), paint);
             canvas.drawBitmap(enemyShip2.getRawEnemyShip(), enemyShip2.getxCoordinate(), enemyShip2.getyCoordinate(), paint);
             canvas.drawBitmap(enemyShip3.getRawEnemyShip(), enemyShip3.getxCoordinate(), enemyShip3.getyCoordinate(), paint);
 
-
-            //drawing meteors
+            //Draw meteors
             canvas.drawBitmap(meteor1.getRawMeteor(), meteor1.getXCoordinate(), meteor1.getYCoordinate(), paint);
             canvas.drawBitmap(meteor2.getRawMeteor(), meteor2.getXCoordinate(), meteor2.getYCoordinate(), paint);
 
-            //drawing the img_left_button button
+            //Draw Left button
             canvas.drawBitmap(leftButton.getButton(), right, left - leftButton.getButton().getHeight(), paint);
 
-            //drawing the img_right_button button
+            //Draw Right button
             canvas.drawBitmap(rightButton.getButton(), rightForRightButton -
                     rightButton.getButton().getWidth(), leftForRightButton -
                     rightButton.getButton().getHeight(), paint);
 
-         //   canvas.drawBitmap(targetButton.getStopButton(), ((img_right_button/2) - (targetButton.getStopButton().getWidth() - (targetButton.getStopButton().getWidth() *2))), img_left_button - targetButton.getStopButton().getHeight(), paint);
-                canvas.drawBitmap(targetButton.getButton(), ((rightForRightButton/2) - (targetButton.getButton().getWidth()/2)),
-                left - targetButton.getButton().getHeight(), paint);
+            //   canvas.drawBitmap(targetButton.getStopButton(), ((img_right_button/2) - (targetButton.getStopButton().getWidth() - (targetButton.getStopButton().getWidth() *2))), img_left_button - targetButton.getStopButton().getHeight(), paint);
+            canvas.drawBitmap(targetButton.getButton(), ((rightForRightButton / 2) - (targetButton.getButton().getWidth() / 2)),
+                    left - targetButton.getButton().getHeight(), paint);
 
-            //drawing stop button
-            canvas.drawBitmap(stopButton.getButton(), rightForRightButton-stopButton.getButton().getWidth(), 0, paint);
+            //Draw Stop button
+            canvas.drawBitmap(stopButton.getButton(), rightForRightButton - stopButton.getButton().getWidth(), 0, paint);
 
-
-            //drawing players laser blasts
-         for (int i = 0; i < listOfRedLasers.size(); i++)
-            {
+            //Draw players laser blasts
+            for (int i = 0; i < listOfRedLasers.size(); i++) {
                 canvas.drawBitmap(listOfRedLasers.get(i).getLaser(), listOfRedLasers.get(i).getCoordinateX(),
                         listOfRedLasers.get(i).getCoordinateY(), paint);
             }
 
-            //paints img_enemy_ship1 space ship laser blasts
-            for (int i = 0; i < enemyShip1LaserBlasts.size(); i++)
-            {
+            //Draw EnemyShip1 laser blasts
+            for (int i = 0; i < enemyShip1LaserBlasts.size(); i++) {
                 canvas.drawBitmap(enemyShip1LaserBlasts.get(i).getLaser(), enemyShip1LaserBlasts.get(i).getCoordinateX(),
                         enemyShip1LaserBlasts.get(i).getCoordinateY(), paint);
             }
-            //paints img_enemy_ship2 space ship laser blasts
-            for (int i = 0; i < enemyShip2LaserBlasts.size(); i++)
-            {
+            //Draw EnemyShip2 laser blasts
+            for (int i = 0; i < enemyShip2LaserBlasts.size(); i++) {
                 canvas.drawBitmap(enemyShip2LaserBlasts.get(i).getLaser(), enemyShip2LaserBlasts.get(i).getCoordinateX(),
                         enemyShip2LaserBlasts.get(i).getCoordinateY(), paint);
             }
-            //paints img_enemy_ship3 space ship laser blasts
-            for (int i = 0; i < enemyShip3LaserBlasts.size(); i++)
-            {
+            //Draw EnemyShip3 laser blasts
+            for (int i = 0; i < enemyShip3LaserBlasts.size(); i++) {
                 canvas.drawBitmap(enemyShip3LaserBlasts.get(i).getLaser(), enemyShip3LaserBlasts.get(i).getCoordinateX(),
                         enemyShip3LaserBlasts.get(i).getCoordinateY(), paint);
             }
 
-            //if the game is not ended then show this information for the user
+            //Information showed if game is not ended
             if (!gameEnded) {
                 paint.setTextAlign(Paint.Align.LEFT);
                 paint.setColor(Color.argb(255, 255, 255, 255));
@@ -539,54 +446,42 @@ public class Gameplay extends SurfaceView implements Runnable {
                 paint.setTextSize(20);
                 canvas.drawText("Lives img_left_button: " + shieldsLeft, 10, 200, paint);
             }
-            //if the game ended then show this information for the user
-             else
-             {
-                 if (pointsScored > bestResult)
-                 {
-                     editor.putInt("highestScore", pointsScored);
-                     editor.commit();
-                     bestResult = pointsScored;
-                 }
+            //Information showed if game is ended
+            else {
+                if (pointsScored > highestScore) {
+                    highestScoreWritter.putInt("highestScore", pointsScored);
+                    highestScoreWritter.commit();
+                    highestScore = pointsScored;
+                }
 
                 paint.setTextSize(80);
                 paint.setTextAlign(Paint.Align.CENTER);
-                canvas.drawText("Your Result: " + pointsScored, rightForRightButton/2, leftForRightButton/2 , paint);
-                 pause();
-                 canvas.drawText("Press red button to play again " + pointsScored, rightForRightButton/2, leftForRightButton/4 , paint);
-                 pause();
+                canvas.drawText("Your Result: " + pointsScored, rightForRightButton / 2, leftForRightButton / 2, paint);
+                pause();
+                canvas.drawText("Press red button to play again " + pointsScored, rightForRightButton / 2, leftForRightButton / 4, paint);
+                pause();
             }
-
             surfaceHolder.unlockCanvasAndPost(canvas);
-
-
         }
-
     }
-
 
     public void pause()
     {
-
         playing = false;
 
         try {
             gameThread.join(10);
-
-        }
-        catch (InterruptedException e)
-        {
+        } catch (InterruptedException e) {
 
         }
     }
 
-    //make a new thread and start it
+    //Makes new thread and starts it
     public void resume()
     {
         playing = true;
         gameThread = new Thread(this);
         gameThread.start();
-
     }
     @Override
     public boolean onTouchEvent (MotionEvent motionEvent)
@@ -678,39 +573,28 @@ public class Gameplay extends SurfaceView implements Runnable {
 
 
     //Decrement points scored when enemy ship leaves screen
-    public void decrementPointsScored()
+    private void decrementPointsScored()
     {
-        if (enemyShip1.getyCoordinate() > gameActivity.getScreenSizeY()) {
-
+        if (enemyShip1.getyCoordinate() > gameActivity.getScreenSizeY())
             pointsScored--;
-        }
 
-        if (enemyShip2.getyCoordinate() > gameActivity.getScreenSizeY()) {
-
+        if (enemyShip2.getyCoordinate() > gameActivity.getScreenSizeY())
             pointsScored--;
-        }
 
-        if (enemyShip3.getyCoordinate() > gameActivity.getScreenSizeY()) {
-
+        if (enemyShip3.getyCoordinate() > gameActivity.getScreenSizeY())
             pointsScored--;
-        }
-
     }
 
-    //generates random number which later is used to decide if shoot ot not
-    public void generateRandomNumber(ArrayList<BlueLaser> listOfLaserBlasts, int x, int y)
+    //Generate random number to decide if enemy ship shoots
+    private void generateRandomNumber(ArrayList<BlueLaser> listOfLaserBlasts, int x, int y)
     {
-        int number = random.nextInt(125);
+        int number = randomGenerator.nextInt(125);
 
         if (number == 1) {
             listOfLaserBlasts.add(new BlueLaser(gameActivity, (x + enemyShip1.getRawEnemyShip().getWidth() / 2) -
                     redLaser.getLaser().getWidth() / 2,
                     y + enemyShip1.getRawEnemyShip().getHeight() / 2, R.drawable.img_blue_laser));
-        } else {
-            //do nothing
         }
     }
-
-
-    }
+}
 
