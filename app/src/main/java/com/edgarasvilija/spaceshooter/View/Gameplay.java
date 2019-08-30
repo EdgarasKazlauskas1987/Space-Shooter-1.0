@@ -136,7 +136,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         leftButton = new LeftButton(context, rightForRightButton, 0, R.drawable.img_left_button);
         rightButton = new RightButton(context, rightForRightButton, 0, R.drawable.img_right_button);
         targetButton = new TargetButton(context, rightForRightButton, leftForRightButton, R.drawable.img_target);
-        stopButton = new StopButton(context, rightForRightButton, leftForRightButton);
+        stopButton = new StopButton(context, rightForRightButton, leftForRightButton, R.drawable.img_stop_button);
 
 
 
@@ -498,7 +498,7 @@ public class Gameplay extends SurfaceView implements Runnable {
                 left - targetButton.getButton().getHeight(), paint);
 
             //drawing stop button
-            canvas.drawBitmap(stopButton.getStopButton(), rightForRightButton-stopButton.getStopButton().getWidth(), 0, paint);
+            canvas.drawBitmap(stopButton.getButton(), rightForRightButton-stopButton.getButton().getWidth(), 0, paint);
 
 
             //drawing players laser blasts
@@ -644,8 +644,8 @@ public class Gameplay extends SurfaceView implements Runnable {
 
                 }
 
-                else if ((y > 0 && y < stopButton.getStopButton().getHeight()) && (x < rightForRightButton && x >
-                        rightForRightButton - stopButton.getStopButton().getWidth()))
+                else if ((y > 0 && y < stopButton.getButton().getHeight()) && (x < rightForRightButton && x >
+                        rightForRightButton - stopButton.getButton().getWidth()))
             {
                 if (playing == false)
                 {
