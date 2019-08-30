@@ -1,60 +1,18 @@
 package com.edgarasvilija.spaceshooter.Model;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
 
 import com.edgarasvilija.spaceshooter.GameActivity;
-import com.edgarasvilija.spaceshooter.R;
+import com.edgarasvilija.spaceshooter.Model.Abstract.AbstractLaser;
 
-/**
- * Created by Edgaras on 13/11/2016.
- */
-public class BlueLaser
+
+public class BlueLaser extends AbstractLaser
 {
-    private Bitmap rawBlueLaser;
-    private Bitmap blueLaser;
-
-    private int xCoordinate;
-    private int yCoordinate;
-
-    private Rect enemyShipLaserBlastRect;
-
-    GameActivity gameActivity;
-
-    public BlueLaser(GameActivity ga, int xCoordinate, int yCoordinate)
+    public BlueLaser(GameActivity gameActivity, int xCoordinate, int yCoordinate, int drawableId)
     {
-        gameActivity = ga;
-        rawBlueLaser = BitmapFactory.decodeResource(gameActivity.getContext().getResources(), R.drawable.img_blue_laser);
-
-        this.xCoordinate = xCoordinate;
-        this.yCoordinate = yCoordinate;
-
-        //counting 3% of all screen area
-        int areaSize = (int)(gameActivity.getScreenArea()*(0.5f/100.0f));
-        //counting root of areaSize variable
-        float root = (float) Math.sqrt(areaSize);
-
-        blueLaser = Bitmap.createScaledBitmap(rawBlueLaser,(int) root, (int) root, true);
-        enemyShipLaserBlastRect = new Rect(xCoordinate, yCoordinate, blueLaser.getWidth(), blueLaser.getHeight());
+        super(gameActivity, xCoordinate, yCoordinate, drawableId);
     }
 
-    public Bitmap getBlueLaser()
-    {
-        return blueLaser;
-    }
-
-    public int getXCoordinate()
-    {
-        return xCoordinate;
-    }
-
-    public int getYCoordinate()
-    {
-        return yCoordinate;
-    }
-
-    public void setYCoordinate()
+    public void setCoordinateY()
     {
         yCoordinate = 5000;
     }
@@ -64,14 +22,9 @@ public class BlueLaser
         yCoordinate += 600 * deltaTime;
 
         // Refresh hit box location
-        enemyShipLaserBlastRect.left = xCoordinate;
-        enemyShipLaserBlastRect.top = yCoordinate;
-        enemyShipLaserBlastRect.right = xCoordinate + blueLaser.getWidth();
-        enemyShipLaserBlastRect.bottom = yCoordinate + blueLaser.getHeight();
-    }
-
-    public Rect getEnemyShipLaserBlastRect()
-    {
-        return enemyShipLaserBlastRect;
+        rectLaser.left = xCoordinate;
+        rectLaser.top = yCoordinate;
+        rectLaser.right = xCoordinate + laser.getWidth();
+        rectLaser.bottom = yCoordinate + laser.getHeight();
     }
 }
