@@ -31,7 +31,7 @@ public class Meteor
     {
         rawMeteor = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_meteor);
         //counting 3% of all screen area
-        int areaSize = (int)(gameActivity.getArea()*(0.5f/100.0f));
+        int areaSize = (int)(gameActivity.getScreenArea()*(0.5f/100.0f));
         //counting root of areaSize variable
         int root = (int) Math.sqrt(areaSize);
 
@@ -45,13 +45,13 @@ public class Meteor
 
     public void update(float deltaTime)
     {
-        if (yCoordinate > gameActivity.getYpart())
+        if (yCoordinate > gameActivity.getScreenSizeY())
         {
             //makes meteor appear only within screen
-            xCoordinate = generator.nextInt(gameActivity.getXpart() - getRawMeteor().getWidth());
+            xCoordinate = generator.nextInt(gameActivity.getScreenSizeX() - getRawMeteor().getWidth());
             yCoordinate = 0;
         } else {
-            yCoordinate += 3 * (gameActivity.getYpart() / 15) * deltaTime;
+            yCoordinate += 3 * (gameActivity.getScreenSizeY() / 15) * deltaTime;
         }
 
         // Refresh hit box location

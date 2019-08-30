@@ -31,7 +31,7 @@ public class BlueLaser
         this.yCoordinate = yCoordinate;
 
         //counting 3% of all screen area
-        int areaSize = (int)(gameActivity.getArea()*(0.5f/100.0f));
+        int areaSize = (int)(gameActivity.getScreenArea()*(0.5f/100.0f));
         //counting root of areaSize variable
         float root = (float) Math.sqrt(areaSize);
 

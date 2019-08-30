@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.edgarasvilija.spaceshooter.GameActivity;
-import com.edgarasvilija.spaceshooter.R;
 
 public abstract class AbstractButton
 {
@@ -23,7 +22,7 @@ public abstract class AbstractButton
         this.yCoordinate = yCoordinate;
 
         //counting 3% of all screen area
-        int areaSize = (int)(gameActivity.getArea()*(3.0f/100.0f));
+        int areaSize = (int)(gameActivity.getScreenArea()*(3.0f/100.0f));
         //counting root of areaSize variable
         int root = (int) Math.sqrt(areaSize);
 

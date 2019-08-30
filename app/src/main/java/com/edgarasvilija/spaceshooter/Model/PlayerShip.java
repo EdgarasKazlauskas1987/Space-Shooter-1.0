@@ -39,7 +39,7 @@ public class PlayerShip
         rawPlayerShip = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_player_ship);
 
         //counting 3% of all screen area
-        int areaSize = (int)(gameActivity.getArea()*(2.5f/100.0f));
+        int areaSize = (int)(gameActivity.getScreenArea()*(2.5f/100.0f));
         //counting root of areaSize variable
         int root = (int) Math.sqrt(areaSize);
 
@@ -58,12 +58,12 @@ public class PlayerShip
         if (goingRight)
         {
             //playerShip goes img_right_button
-            xCoordinate += 1 * (gameActivity.getXpart() / 2) *deltaTime;
+            xCoordinate += 1 * (gameActivity.getScreenSizeX() / 2) *deltaTime;
         }
 
         else if (goingLeft){
             //playerShip goes back to img_right_button
-            xCoordinate -= 1 * (gameActivity.getXpart() / 2) *deltaTime;
+            xCoordinate -= 1 * (gameActivity.getScreenSizeX() / 2) *deltaTime;
         }
 
         else {
@@ -99,7 +99,7 @@ public class PlayerShip
 
     public int getMaxX()
     {
-        maxX = gameActivity.getXpart()  - playerShip.getWidth();
+        maxX = gameActivity.getScreenSizeX()  - playerShip.getWidth();
 
         return maxX;
     }

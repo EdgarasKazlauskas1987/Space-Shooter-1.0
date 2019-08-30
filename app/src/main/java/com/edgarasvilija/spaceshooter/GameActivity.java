@@ -9,16 +9,13 @@ import android.view.Display;
 import com.edgarasvilija.spaceshooter.View.Gameplay;
 
 
-public class GameActivity extends Activity {
-
-    private Gameplay gameplay;
-
-    //these will be used to see what size is the screen
-    public static int screenXsize;
-    public static int screenYsize;
+public class GameActivity extends Activity
+{
+    private static int screenSizeX;
+    private static int screenSizeY;
 
     private static Context mContext;
-
+    private Gameplay gameplay;
 
     //this is where playButton sends us from MainActivity
     @Override
@@ -33,17 +30,14 @@ public class GameActivity extends Activity {
         Point screenSize = new Point();
         display.getSize(screenSize);
         //setting screen size to variables
-        screenXsize = screenSize.x;
-        screenYsize = screenSize.y;
-
+        screenSizeX = screenSize.x;
+        screenSizeY = screenSize.y;
 
         gameplay = new Gameplay(this, screenSize.x, screenSize.y, screenSize.x);
-
         //making our game view the view for the activity
         setContentView(gameplay);
-            }
+    }
 
-    //uses method from GameView class
     @Override
     protected void onPause()
     {
@@ -59,31 +53,24 @@ public class GameActivity extends Activity {
         gameplay.resume();
     }
 
-
-    //these methods used to return x and y of the screen
-    public int getXpart()
+    public int getScreenSizeX()
     {
-        return screenXsize;
+        return screenSizeX;
     }
 
-    public int getYpart()
+    public int getScreenSizeY()
     {
-        return screenYsize;
+        return screenSizeY;
     }
 
-    //calculates are of the screen
-    public int getArea()
+    public int getScreenArea()
     {
-        int x = screenXsize;
-        int y = screenYsize;
-        int area = x * y;
-        return area;
+        return screenSizeX * screenSizeY;
     }
 
     public  Context getContext(){
         return mContext;
     }
-
-    }
+}
 
 

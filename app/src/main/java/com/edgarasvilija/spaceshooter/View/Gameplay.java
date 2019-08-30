@@ -145,8 +145,8 @@ public class Gameplay extends SurfaceView implements Runnable {
         enemyShip2 = new EnemyShip(context, 5, 0);
         enemyShip3 = new EnemyShip(context, 5, 0);
         redLaser = new RedLaser( rightForRightButton ,leftForRightButton);
-        meteor1 = new Meteor(context, placeGenerator.nextInt(gameActivity.getXpart() + 1), 0);
-        meteor2 = new Meteor(context, placeGenerator.nextInt(gameActivity.getXpart() + 1), 0);
+        meteor1 = new Meteor(context, placeGenerator.nextInt(gameActivity.getScreenSizeX() + 1), 0);
+        meteor2 = new Meteor(context, placeGenerator.nextInt(gameActivity.getScreenSizeX() + 1), 0);
         listOfRedLasers = new ArrayList<>();
         enemyShip1LaserBlasts = new ArrayList<>();
 
@@ -251,7 +251,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         //if they are still on screen they are updated
         for (int i = 0; i < enemyShip1LaserBlasts.size(); i++ )
         {
-            if (enemyShip1LaserBlasts.get(i).getYCoordinate() > gameActivity.getYpart())
+            if (enemyShip1LaserBlasts.get(i).getYCoordinate() > gameActivity.getScreenSizeY())
             {
                 enemyShip1LaserBlasts.remove(enemyShip1LaserBlasts.get(i));
 
@@ -265,7 +265,7 @@ public class Gameplay extends SurfaceView implements Runnable {
 
         for (int i = 0; i < enemyShip2LaserBlasts.size(); i++ )
         {
-            if (enemyShip2LaserBlasts.get(i).getYCoordinate() > gameActivity.getYpart())
+            if (enemyShip2LaserBlasts.get(i).getYCoordinate() > gameActivity.getScreenSizeY())
             {
                 enemyShip2LaserBlasts.remove(enemyShip2LaserBlasts.get(i));
 
@@ -278,7 +278,7 @@ public class Gameplay extends SurfaceView implements Runnable {
 
         for (int i = 0; i < enemyShip3LaserBlasts.size(); i++ )
         {
-            if (enemyShip3LaserBlasts.get(i).getYCoordinate() > gameActivity.getYpart())
+            if (enemyShip3LaserBlasts.get(i).getYCoordinate() > gameActivity.getScreenSizeY())
             {
                 enemyShip3LaserBlasts.remove(enemyShip3LaserBlasts.get(i));
 
@@ -680,17 +680,17 @@ public class Gameplay extends SurfaceView implements Runnable {
     //decrement points scored by the player
     public void decrementPointsScored()
     {
-        if (enemyShip1.getyCoordinate() > gameActivity.getYpart()) {
+        if (enemyShip1.getyCoordinate() > gameActivity.getScreenSizeY()) {
 
             pointsScored--;
         }
 
-        if (enemyShip2.getyCoordinate() > gameActivity.getYpart()) {
+        if (enemyShip2.getyCoordinate() > gameActivity.getScreenSizeY()) {
 
             pointsScored--;
         }
 
-        if (enemyShip3.getyCoordinate() > gameActivity.getYpart()) {
+        if (enemyShip3.getyCoordinate() > gameActivity.getScreenSizeY()) {
 
             pointsScored--;
         }
