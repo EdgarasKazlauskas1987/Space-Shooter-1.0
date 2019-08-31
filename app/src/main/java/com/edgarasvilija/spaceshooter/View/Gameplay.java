@@ -12,6 +12,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.edgarasvilija.spaceshooter.GameActivity;
+import com.edgarasvilija.spaceshooter.Helper.DrawElements;
 import com.edgarasvilija.spaceshooter.Model.EnemyShip;
 import com.edgarasvilija.spaceshooter.Model.BlueLaser;
 import com.edgarasvilija.spaceshooter.Model.RedLaser;
@@ -33,7 +34,6 @@ public class Gameplay extends SurfaceView implements Runnable {
 
     GameActivity gameActivity;
     Context context;
-
 
     private SharedPreferences highestScoreLoader;
     private SharedPreferences.Editor highestScoreWritter;
@@ -73,7 +73,6 @@ public class Gameplay extends SurfaceView implements Runnable {
 
     private int framesPerSecond = 0;
 
-
     public static ArrayList<RedLaser> listOfRedLasers = new ArrayList<>() ;
     public static ArrayList<BlueLaser> enemyShip1LaserBlasts = new ArrayList<>();
     public static ArrayList<BlueLaser> enemyShip2LaserBlasts = new ArrayList<>();
@@ -81,6 +80,7 @@ public class Gameplay extends SurfaceView implements Runnable {
 
     AudioConfiguration audioConfig;
     Dashboard dashboard;
+    DrawElements drawElements;
 
     public Gameplay(GameActivity gameActivity, int x, int y, int rightForPlayerShip)
     {
@@ -129,6 +129,7 @@ public class Gameplay extends SurfaceView implements Runnable {
 
         audioConfig = new AudioConfiguration(context);
         dashboard = new Dashboard();
+        drawElements = new DrawElements();
     }
 
     @Override
@@ -356,55 +357,24 @@ public class Gameplay extends SurfaceView implements Runnable {
             canvas = surfaceHolder.lockCanvas();
             canvas.drawColor(Color.argb(255, 0, 0, 0));
 
-            //Draw players ship
-            canvas.drawBitmap(playerShip.getRawPlayerShip(), playerShip.getxCoordinate(),
-                    left - targetButton.getButton().getHeight() - playerShip.getRawPlayerShip().getHeight(), paint);
+            //Draw Ships
+            drawElements.drawPlayerShip(paint, canvas, playerShip, targetButton, left);
+            drawElements.drawEnemyShips(paint, canvas, enemyShip1, enemyShip2, enemyShip3);
 
-            //Draw enemy ships
-            canvas.drawBitmap(enemyShip1.getRawEnemyShip(), enemyShip1.getxCoordinate(), enemyShip1.getyCoordinate(), paint);
-            canvas.drawBitmap(enemyShip2.getRawEnemyShip(), enemyShip2.getxCoordinate(), enemyShip2.getyCoordinate(), paint);
-            canvas.drawBitmap(enemyShip3.getRawEnemyShip(), enemyShip3.getxCoordinate(), enemyShip3.getyCoordinate(), paint);
+            //Draw Buttons
+            drawElements.drawLeftButton(paint, canvas, leftButton, right, left);
+            drawElements.drawRightButton(paint, canvas, rightButton, rightForRightButton, leftForRightButton);
+            drawElements.drawTargetButton(paint, canvas, targetButton, rightForRightButton, left);
+            drawElements. drawStopButton(paint, canvas, stopButton, rightForRightButton);
+
+            //Draw Laser blasts
+            drawElements. drawPlayerLaserBlasts(paint, canvas, listOfRedLasers);
+            drawElements. drawEnemyShip1LaserBlasts(paint, canvas, enemyShip1LaserBlasts);
+            drawElements.drawEnemyShip2LaserBlasts(paint, canvas, enemyShip2LaserBlasts);
+            drawElements.drawEnemyShip3LaserBlasts(paint, canvas, enemyShip3LaserBlasts);
 
             //Draw meteors
-            canvas.drawBitmap(meteor1.getRawMeteor(), meteor1.getXCoordinate(), meteor1.getYCoordinate(), paint);
-            canvas.drawBitmap(meteor2.getRawMeteor(), meteor2.getXCoordinate(), meteor2.getYCoordinate(), paint);
-
-            //Draw Left button
-            canvas.drawBitmap(leftButton.getButton(), right, left - leftButton.getButton().getHeight(), paint);
-
-            //Draw Right button
-            canvas.drawBitmap(rightButton.getButton(), rightForRightButton -
-                    rightButton.getButton().getWidth(), leftForRightButton -
-                    rightButton.getButton().getHeight(), paint);
-
-            //   canvas.drawBitmap(targetButton.getStopButton(), ((img_right_button/2) - (targetButton.getStopButton().getWidth() - (targetButton.getStopButton().getWidth() *2))), img_left_button - targetButton.getStopButton().getHeight(), paint);
-            canvas.drawBitmap(targetButton.getButton(), ((rightForRightButton / 2) - (targetButton.getButton().getWidth() / 2)),
-                    left - targetButton.getButton().getHeight(), paint);
-
-            //Draw Stop button
-            canvas.drawBitmap(stopButton.getButton(), rightForRightButton - stopButton.getButton().getWidth(), 0, paint);
-
-            //Draw players laser blasts
-            for (int i = 0; i < listOfRedLasers.size(); i++) {
-                canvas.drawBitmap(listOfRedLasers.get(i).getLaser(), listOfRedLasers.get(i).getCoordinateX(),
-                        listOfRedLasers.get(i).getCoordinateY(), paint);
-            }
-
-            //Draw EnemyShip1 laser blasts
-            for (int i = 0; i < enemyShip1LaserBlasts.size(); i++) {
-                canvas.drawBitmap(enemyShip1LaserBlasts.get(i).getLaser(), enemyShip1LaserBlasts.get(i).getCoordinateX(),
-                        enemyShip1LaserBlasts.get(i).getCoordinateY(), paint);
-            }
-            //Draw EnemyShip2 laser blasts
-            for (int i = 0; i < enemyShip2LaserBlasts.size(); i++) {
-                canvas.drawBitmap(enemyShip2LaserBlasts.get(i).getLaser(), enemyShip2LaserBlasts.get(i).getCoordinateX(),
-                        enemyShip2LaserBlasts.get(i).getCoordinateY(), paint);
-            }
-            //Draw EnemyShip3 laser blasts
-            for (int i = 0; i < enemyShip3LaserBlasts.size(); i++) {
-                canvas.drawBitmap(enemyShip3LaserBlasts.get(i).getLaser(), enemyShip3LaserBlasts.get(i).getCoordinateX(),
-                        enemyShip3LaserBlasts.get(i).getCoordinateY(), paint);
-            }
+            drawElements.drawMeteors(paint, canvas, meteor1, meteor2);
 
             //Information showed if game is still played or ended
             if (!gameEnded)
