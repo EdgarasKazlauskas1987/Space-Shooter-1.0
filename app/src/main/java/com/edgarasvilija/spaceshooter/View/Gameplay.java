@@ -23,6 +23,7 @@ import com.edgarasvilija.spaceshooter.Model.StopButton;
 import com.edgarasvilija.spaceshooter.Model.TargetButton;
 import com.edgarasvilija.spaceshooter.R;
 import com.edgarasvilija.spaceshooter.Settings.AudioConfiguration;
+import com.edgarasvilija.spaceshooter.Settings.Dashboard;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -79,6 +80,7 @@ public class Gameplay extends SurfaceView implements Runnable {
     public static ArrayList<BlueLaser> enemyShip3LaserBlasts = new ArrayList<>();
 
     AudioConfiguration audioConfig;
+    Dashboard dashboard;
 
     public Gameplay(GameActivity gameActivity, int x, int y, int rightForPlayerShip)
     {
@@ -126,6 +128,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         enemyShip1LaserBlasts = new ArrayList<>();
 
         audioConfig = new AudioConfiguration(context);
+        dashboard = new Dashboard();
     }
 
     @Override
@@ -403,31 +406,14 @@ public class Gameplay extends SurfaceView implements Runnable {
                         enemyShip3LaserBlasts.get(i).getCoordinateY(), paint);
             }
 
-            //Information showed if game is not ended
-            if (!gameEnded) {
-                paint.setTextAlign(Paint.Align.LEFT);
-                paint.setColor(Color.argb(255, 255, 255, 255));
-                paint.setTextSize(20);
-                canvas.drawText("Points scored: " + pointsScored, 10, 20, paint);
-
-                paint.setTextAlign(Paint.Align.RIGHT);
-                paint.setColor(Color.argb(255, 255, 255, 255));
-                paint.setTextSize(20);
-                canvas.drawText("Lives img_left_button: " + shieldsLeft, 10, 200, paint);
+            //Information showed if game is still played or ended
+            if (!gameEnded)
+            {
+                dashboard.gamePlayingInfo(paint, canvas, pointsScored, shieldsLeft);
             }
-            //Information showed if game is ended
-            else {
-                if (pointsScored > highestScore) {
-                    highestScoreWritter.putInt("highestScore", pointsScored);
-                    highestScoreWritter.commit();
-                    highestScore = pointsScored;
-                }
-
-                paint.setTextSize(80);
-                paint.setTextAlign(Paint.Align.CENTER);
-                canvas.drawText("Your Result: " + pointsScored, rightForRightButton / 2, leftForRightButton / 2, paint);
-                pause();
-                canvas.drawText("Press red button to play again " + pointsScored, rightForRightButton / 2, leftForRightButton / 4, paint);
+            else
+            {
+                dashboard.gameEndedInfo(paint, canvas, pointsScored, highestScore, highestScoreWritter, rightForRightButton, leftForRightButton);
                 pause();
             }
             surfaceHolder.unlockCanvasAndPost(canvas);
@@ -455,10 +441,8 @@ public class Gameplay extends SurfaceView implements Runnable {
     @Override
     public boolean onTouchEvent (MotionEvent motionEvent)
     {
-
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK )
         {
-
             //player touched the screen
             case MotionEvent.ACTION_DOWN:
 
