@@ -77,6 +77,7 @@ public class Gameplay extends SurfaceView implements Runnable {
     public static ArrayList<BlueLaser> enemyShip1LaserBlasts = new ArrayList<>();
     public static ArrayList<BlueLaser> enemyShip2LaserBlasts = new ArrayList<>();
     public static ArrayList<BlueLaser> enemyShip3LaserBlasts = new ArrayList<>();
+    public static ArrayList<ArrayList<BlueLaser>> enemyShipsLaserBlasts = new ArrayList<>();
 
     AudioConfiguration audioConfig;
     Dashboard dashboard;
@@ -191,6 +192,12 @@ public class Gameplay extends SurfaceView implements Runnable {
         //checks if laser blasts are still within the screen
         //and if they leave the screen they are removed from arrayList
         //if they are still on screen they are updated
+
+        //ToDo: uncomment when ready
+/*        enemyShipsLaserBlasts.add(enemyShip1LaserBlasts);
+        enemyShipsLaserBlasts.add(enemyShip2LaserBlasts);
+        enemyShipsLaserBlasts.add(enemyShip3LaserBlasts);*/
+
         for (int i = 0; i < enemyShip1LaserBlasts.size(); i++) {
             if (enemyShip1LaserBlasts.get(i).getCoordinateY() > gameActivity.getScreenSizeY()) {
                 enemyShip1LaserBlasts.remove(enemyShip1LaserBlasts.get(i));
@@ -217,6 +224,8 @@ public class Gameplay extends SurfaceView implements Runnable {
                 enemyShip3LaserBlasts.get(i).update(deltaTime);
             }
         }
+        //ToDo: Uncomment when ready
+        //enemyShipsLaserBlasts.clear();
 
         //checking if enemy ship and players ship collides with each other
         //if they collide then player looses 1 shield and 1 point
@@ -393,7 +402,6 @@ public class Gameplay extends SurfaceView implements Runnable {
     public void pause()
     {
         playing = false;
-
         try {
             gameThread.join(10);
         } catch (InterruptedException e) {
@@ -408,11 +416,10 @@ public class Gameplay extends SurfaceView implements Runnable {
         gameThread = new Thread(this);
         gameThread.start();
     }
+
     @Override
-    public boolean onTouchEvent (MotionEvent motionEvent)
-    {
-        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK )
-        {
+    public boolean onTouchEvent(MotionEvent motionEvent) {
+        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             //player touched the screen
             case MotionEvent.ACTION_DOWN:
 
@@ -428,58 +435,44 @@ public class Gameplay extends SurfaceView implements Runnable {
 
                 //checking if we have pressed LEFT button
                 if ((x > right && x < right + leftButton.getButton().getWidth()) &&
-                        (y > left - leftButton.getButton().getHeight() && y < left))
-                {
+                        (y > left - leftButton.getButton().getHeight() && y < left)) {
                     playerShip.goLeft();
                     //pause();
                 }
 
                 //checking if player clicked RIGHT button
                 else if ((x <= rightForRightButton && x >= rightForRightButton - rightButton.getButton().getWidth()) &&
-                        ( y  <= left && y >= left - rightButton.getButton().getHeight()))
-            {
-                playerShip.goRight();
+                        (y <= left && y >= left - rightButton.getButton().getHeight())) {
+                    playerShip.goRight();
 
-                //resume();
-            }
+                    //resume();
+                }
 
                 //cheking if player clicked SHOOT button
-                else if ((x <= rightForRightButton/2 + targetButton.getButton().getWidth()/2) &&
-                ((x >= rightForRightButton/2 - (targetButton.getButton().getWidth()/2)))
-                        && (y <= left && (y >= left - rightButton.getButton().getHeight())))
-
-                {
-                    audioConfig.getSoundPool().play(audioConfig.getLaserBlastSound(), 1,1,0,0,1);
+                else if ((x <= rightForRightButton / 2 + targetButton.getButton().getWidth() / 2) &&
+                        ((x >= rightForRightButton / 2 - (targetButton.getButton().getWidth() / 2)))
+                        && (y <= left && (y >= left - rightButton.getButton().getHeight()))) {
+                    audioConfig.getSoundPool().play(audioConfig.getLaserBlastSound(), 1, 1, 0, 0, 1);
                     numberOfShoots++;
-                    if (numberOfShoots > 150)
-                    {
+                    if (numberOfShoots > 150) {
                         gameEnded = true;
                     }
                     Log.i("Number of laser Shoots" + numberOfShoots, "+++++++++");
-                    listOfRedLasers.add(new RedLaser(gameActivity, (playerShip.getxCoordinate() + (playerShip.getBitmapWidth()/2)) - (redLaser.getLaser().getWidth()/2)
+                    listOfRedLasers.add(new RedLaser(gameActivity, (playerShip.getxCoordinate() + (playerShip.getBitmapWidth() / 2)) - (redLaser.getLaser().getWidth() / 2)
                             , playerShip.getyCoordinate()
                             - targetButton.getButton().getHeight() - playerShip.getRawPlayerShip().getHeight(), R.drawable.img_red_laser));
 
+                } else if ((y > 0 && y < stopButton.getButton().getHeight()) && (x < rightForRightButton && x >
+                        rightForRightButton - stopButton.getButton().getWidth())) {
+                    if (playing == false) {
+                        resume();
+                    } else if (playing == true) {
+                        pause();
+                    }
                 }
-
-                else if ((y > 0 && y < stopButton.getButton().getHeight()) && (x < rightForRightButton && x >
-                        rightForRightButton - stopButton.getButton().getWidth()))
-            {
-                if (playing == false)
-                {
-                    resume();
-                }
-
-                else if (playing == true)
-                {
-                    pause();
-                }
-            }
                 //if player clicked somewhere else
-            else
-                {
+                else {
                     //do nothing
-
                 }
 
                 break;
@@ -491,9 +484,7 @@ public class Gameplay extends SurfaceView implements Runnable {
                 break;
         }
         return true;
-
     }
-
 
     //Decrement points scored when enemy ship leaves screen
     private void decrementPointsScored()
