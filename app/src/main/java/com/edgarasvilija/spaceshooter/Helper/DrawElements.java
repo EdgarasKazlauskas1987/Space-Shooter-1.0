@@ -32,10 +32,9 @@ public class DrawElements
     }
 
     //ToDo: Change to List of Meteors
-    public void drawMeteors(Paint paint, Canvas canvas, Meteor meteor1, Meteor meteor2)
+    public void drawMeteor(Paint paint, Canvas canvas, Meteor meteor1)
     {
         canvas.drawBitmap(meteor1.getRawMeteor(), meteor1.getXCoordinate(), meteor1.getYCoordinate(), paint);
-        canvas.drawBitmap(meteor2.getRawMeteor(), meteor2.getXCoordinate(), meteor2.getYCoordinate(), paint);
     }
 
     public void drawLeftButton(Paint paint, Canvas canvas, LeftButton button, int right, int left)

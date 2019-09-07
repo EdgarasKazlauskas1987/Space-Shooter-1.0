@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.edgarasvilija.spaceshooter.Controller.GameplayController;
 import com.edgarasvilija.spaceshooter.GameActivity;
 import com.edgarasvilija.spaceshooter.Helper.DrawElements;
 import com.edgarasvilija.spaceshooter.Model.EnemyShip;
@@ -25,6 +26,7 @@ import com.edgarasvilija.spaceshooter.Model.TargetButton;
 import com.edgarasvilija.spaceshooter.R;
 import com.edgarasvilija.spaceshooter.Settings.AudioConfiguration;
 import com.edgarasvilija.spaceshooter.Settings.Dashboard;
+import com.edgarasvilija.spaceshooter.Settings.ShieldsHandler;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -42,7 +44,6 @@ public class Gameplay extends SurfaceView implements Runnable {
     private volatile boolean playing;
     private volatile boolean gameEnded = false;
     private volatile static int pointsScored;
-    private volatile static int shieldsLeft;
     private volatile static int numberOfShoots;
 
     Thread gameThread = null;
@@ -59,7 +60,6 @@ public class Gameplay extends SurfaceView implements Runnable {
     private EnemyShip enemyShip2;
     private EnemyShip enemyShip3;
     private Meteor meteor1;
-    private Meteor meteor2;
 
     private Paint paint;
     private Canvas canvas;
@@ -82,6 +82,8 @@ public class Gameplay extends SurfaceView implements Runnable {
     AudioConfiguration audioConfig;
     Dashboard dashboard;
     DrawElements drawElements;
+    GameplayController controller = new GameplayController();
+    ShieldsHandler shieldsHandler = new ShieldsHandler();
 
     public Gameplay(GameActivity gameActivity, int x, int y, int rightForPlayerShip)
     {
@@ -110,7 +112,7 @@ public class Gameplay extends SurfaceView implements Runnable {
     public void startGame()
     {
         pointsScored = 0;
-        shieldsLeft = 3;
+        shieldsHandler.setShieldsLeft();
         numberOfShoots = 0;
 
         playerShip = new PlayerShip(context, rightForRightButton/2 , leftForRightButton); //x y
@@ -124,7 +126,6 @@ public class Gameplay extends SurfaceView implements Runnable {
         enemyShip3 = new EnemyShip(context, 5, 0);
         redLaser = new RedLaser(gameActivity, rightForRightButton ,leftForRightButton, R.drawable.img_red_laser);
         meteor1 = new Meteor(context, randomGenerator.nextInt(gameActivity.getScreenSizeX() + 1), 0);
-        meteor2 = new Meteor(context, randomGenerator.nextInt(gameActivity.getScreenSizeX() + 1), 0);
         listOfRedLasers = new ArrayList<>();
         enemyShip1LaserBlasts = new ArrayList<>();
 
@@ -186,7 +187,6 @@ public class Gameplay extends SurfaceView implements Runnable {
         enemyShip2.update(deltaTime);
         enemyShip3.update(deltaTime);
         meteor1.update(deltaTime);
-        meteor2.update(deltaTime);
 
         //handles enemy ship laser blasts
         //checks if laser blasts are still within the screen
@@ -231,56 +231,47 @@ public class Gameplay extends SurfaceView implements Runnable {
         //if they collide then player looses 1 shield and 1 point
         //enemy ship is destroyed
 
-        if (Rect.intersects(enemyShip1.getEnemyShipRect(), playerShip.getHitBox())) {
+        if (Rect.intersects(enemyShip1.getEnemyShipRect(), playerShip.getHitBox()))
+        {
             audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
             enemyShip1.setyCoordinate(0);
-            shieldsLeft--;
+            shieldsHandler.decrementShieldsLeft();
             decrementPointsScored();
-            if (shieldsLeft < 0) {
+            if (!shieldsHandler.areShieldsLeft()) {
                 gameEnded = true;
             }
-            //gameEnded = true;
         }
 
-        if (Rect.intersects(enemyShip2.getEnemyShipRect(), playerShip.getHitBox())) {
+        if (Rect.intersects(enemyShip2.getEnemyShipRect(), playerShip.getHitBox()))
+        {
             audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
             enemyShip2.setyCoordinate(0);
-            shieldsLeft--;
+            shieldsHandler.decrementShieldsLeft();
             decrementPointsScored();
-            if (shieldsLeft < 0) {
+            if (!shieldsHandler.areShieldsLeft()) {
                 gameEnded = true;
             }
-            //gameEnded = true;
 
         }
-        if (Rect.intersects(enemyShip3.getEnemyShipRect(), playerShip.getHitBox())) {
+        if (Rect.intersects(enemyShip3.getEnemyShipRect(), playerShip.getHitBox()))
+        {
             audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
             enemyShip3.setyCoordinate(0);
-            shieldsLeft--;
+            shieldsHandler.decrementShieldsLeft();
             decrementPointsScored();
-            if (shieldsLeft < 0) {
+            if (!shieldsHandler.areShieldsLeft()) {
                 gameEnded = true;
             }
-            //gameEnded = true;
         }
 
-        //checking if player's ship collides with meteors
-        //if so the player looses 1 shield and meteor dissapers
-        //also checking if player still have shields, if not then game over
-        if (Rect.intersects(meteor1.getHitBox(), playerShip.getHitBox())) {
-            audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
+
+        //Check if Player Ship and Meteor collided
+        if (controller.isMeteorPlayerShipCollided(meteor1, playerShip))
+        {   //Handle consequences
+            audioConfig.playExplosionSound();
             meteor1.setYCoorinate();
-            shieldsLeft--;
-            if (shieldsLeft < 0) {
-                gameEnded = true;
-            }
-        }
-
-        if (Rect.intersects(meteor2.getHitBox(), playerShip.getHitBox())) {
-            audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
-            meteor2.setYCoorinate();
-            shieldsLeft--;
-            if (shieldsLeft < 0) {
+            shieldsHandler.decrementShieldsLeft();
+            if (!shieldsHandler.areShieldsLeft()) {
                 gameEnded = true;
             }
         }
@@ -292,8 +283,8 @@ public class Gameplay extends SurfaceView implements Runnable {
                 audioConfig.getSoundPool().play(audioConfig.getHitSound(), 1, 1, 0, 0, 1);
                 enemyShip1LaserBlasts.get(i).setCoordinateY();
                 decrementPointsScored();
-                shieldsLeft--;
-                if (shieldsLeft < 0) {
+                shieldsHandler.decrementShieldsLeft();
+                if (!shieldsHandler.areShieldsLeft()) {
                     gameEnded = true;
                 }
             }
@@ -304,8 +295,8 @@ public class Gameplay extends SurfaceView implements Runnable {
                 audioConfig.getSoundPool().play(audioConfig.getHitSound(), 1, 1, 0, 0, 1);
                 enemyShip2LaserBlasts.get(i).setCoordinateY();
                 decrementPointsScored();
-                shieldsLeft--;
-                if (shieldsLeft < 0) {
+                shieldsHandler.decrementShieldsLeft();
+                if (!shieldsHandler.areShieldsLeft()) {
                     gameEnded = true;
                 }
             }
@@ -316,8 +307,8 @@ public class Gameplay extends SurfaceView implements Runnable {
                 audioConfig.getSoundPool().play(audioConfig.getHitSound(), 1, 1, 0, 0, 1);
                 enemyShip3LaserBlasts.get(i).setCoordinateY();
                 decrementPointsScored();
-                shieldsLeft--;
-                if (shieldsLeft < 0) {
+                shieldsHandler.decrementShieldsLeft();
+                if (!shieldsHandler.areShieldsLeft()) {
                     gameEnded = true;
                 }
             }
@@ -382,13 +373,13 @@ public class Gameplay extends SurfaceView implements Runnable {
             drawElements.drawEnemyShip2LaserBlasts(paint, canvas, enemyShip2LaserBlasts);
             drawElements.drawEnemyShip3LaserBlasts(paint, canvas, enemyShip3LaserBlasts);
 
-            //Draw meteors
-            drawElements.drawMeteors(paint, canvas, meteor1, meteor2);
+            //Draw meteor
+            drawElements.drawMeteor(paint, canvas, meteor1);
 
             //Information showed if game is still played or ended
             if (!gameEnded)
             {
-                dashboard.gamePlayingInfo(paint, canvas, pointsScored, shieldsLeft);
+                dashboard.gamePlayingInfo(paint, canvas, pointsScored, shieldsHandler.getShieldsLeft());
             }
             else
             {

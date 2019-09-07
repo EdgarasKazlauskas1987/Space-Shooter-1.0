@@ -12,6 +12,12 @@ public class AudioConfiguration
 {
     private static SoundPool soundPool = new SoundPool(10,AudioManager.STREAM_MUSIC, 0);
 
+    private final int leftVolume = 1;
+    private final int rightVolume = 1;
+    private final int priority = 0;
+    private final int loop = 0;
+    private final int rate = 1;
+
     private int explosionSound = -1;
     private int destroyedSound = -1;
     private int hitSound = -1;
@@ -47,6 +53,11 @@ public class AudioConfiguration
         return laserBlastSound;
     }
 
+    public void playExplosionSound()
+    {
+        soundPool.play(explosionSound, leftVolume, rightVolume, priority, loop, rate);
+    }
+
     private void setSoundConfiguration(Context context)
     {
         try {
@@ -69,7 +80,6 @@ public class AudioConfiguration
 
         catch (IOException e)
         {
-
         }
     }
 }
