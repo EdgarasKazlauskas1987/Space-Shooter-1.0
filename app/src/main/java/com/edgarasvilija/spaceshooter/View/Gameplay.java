@@ -17,10 +17,8 @@ import com.edgarasvilija.spaceshooter.Helper.DrawElements;
 import com.edgarasvilija.spaceshooter.Model.EnemyShip;
 import com.edgarasvilija.spaceshooter.Model.BlueLaser;
 import com.edgarasvilija.spaceshooter.Model.RedLaser;
-import com.edgarasvilija.spaceshooter.Model.LeftButton;
 import com.edgarasvilija.spaceshooter.Model.Meteor;
 import com.edgarasvilija.spaceshooter.Model.PlayerShip;
-import com.edgarasvilija.spaceshooter.Model.RightButton;
 import com.edgarasvilija.spaceshooter.Model.StopButton;
 import com.edgarasvilija.spaceshooter.Model.TargetButton;
 import com.edgarasvilija.spaceshooter.R;
@@ -51,10 +49,6 @@ public class Gameplay extends SurfaceView implements Runnable {
     private Random randomGenerator = new Random();
 
     private PlayerShip playerShip;
-    private LeftButton leftButton;
-    private RightButton rightButton;
-    private TargetButton targetButton;
-    private StopButton stopButton;
     private RedLaser redLaser;
     private EnemyShip enemyShip1;
     private EnemyShip enemyShip2;
@@ -85,6 +79,8 @@ public class Gameplay extends SurfaceView implements Runnable {
     GameplayController controller = new GameplayController();
     ShieldsHandler shieldsHandler = new ShieldsHandler();
     PointsHandler pointsHandler = new PointsHandler();
+
+    GameplayButtons gameplayButtons = new GameplayButtons();
 
     public Gameplay(GameActivity gameActivity, int x, int y, int rightForPlayerShip)
     {
@@ -118,10 +114,8 @@ public class Gameplay extends SurfaceView implements Runnable {
         numberOfShoots = 0;
 
         playerShip = new PlayerShip(context, rightForRightButton/2 , leftForRightButton); //x y
-        leftButton = new LeftButton(context, rightForRightButton, 0, R.drawable.img_left_button);
-        rightButton = new RightButton(context, rightForRightButton, 0, R.drawable.img_right_button);
-        targetButton = new TargetButton(context, rightForRightButton, leftForRightButton, R.drawable.img_target);
-        stopButton = new StopButton(context, rightForRightButton, leftForRightButton, R.drawable.img_stop_button);
+
+        gameplayButtons.createButtons(context, rightForRightButton, leftForRightButton);
 
         enemyShip1 = new EnemyShip(context, 5, 0);
         enemyShip2 = new EnemyShip(context, 5, 0);
@@ -183,7 +177,7 @@ public class Gameplay extends SurfaceView implements Runnable {
     {
         decrementPointsScored();
 
-        playerShip.update(deltaTime, left - targetButton.getButton().getHeight() - playerShip.getRawPlayerShip().getHeight());
+        playerShip.update(deltaTime, left - gameplayButtons.getTargetButton().getButton().getHeight() - playerShip.getRawPlayerShip().getHeight());
 
         enemyShip1.update(deltaTime);
         enemyShip2.update(deltaTime);
@@ -360,14 +354,14 @@ public class Gameplay extends SurfaceView implements Runnable {
             canvas.drawColor(Color.argb(255, 0, 0, 0));
 
             //Draw Ships
-            drawElements.drawPlayerShip(paint, canvas, playerShip, targetButton, left);
+            drawElements.drawPlayerShip(paint, canvas, playerShip, gameplayButtons.getTargetButton(), left);
             drawElements.drawEnemyShips(paint, canvas, enemyShip1, enemyShip2, enemyShip3);
 
             //Draw Buttons
-            drawElements.drawLeftButton(paint, canvas, leftButton, right, left);
-            drawElements.drawRightButton(paint, canvas, rightButton, rightForRightButton, leftForRightButton);
-            drawElements.drawTargetButton(paint, canvas, targetButton, rightForRightButton, left);
-            drawElements. drawStopButton(paint, canvas, stopButton, rightForRightButton);
+            drawElements.drawLeftButton(paint, canvas, gameplayButtons.getLeftButton(), right, left);
+            drawElements.drawRightButton(paint, canvas, gameplayButtons.getRightButton(), rightForRightButton, leftForRightButton);
+            drawElements.drawTargetButton(paint, canvas, gameplayButtons.getTargetButton(), rightForRightButton, left);
+            drawElements. drawStopButton(paint, canvas, gameplayButtons.getStopButton(), rightForRightButton);
 
             //Draw Laser blasts
             drawElements. drawPlayerLaserBlasts(paint, canvas, listOfRedLasers);
@@ -427,24 +421,24 @@ public class Gameplay extends SurfaceView implements Runnable {
                 int y = (int) motionEvent.getY();
 
                 //checking if we have pressed LEFT button
-                if ((x > right && x < right + leftButton.getButton().getWidth()) &&
-                        (y > left - leftButton.getButton().getHeight() && y < left)) {
+                if ((x > right && x < right + gameplayButtons.getLeftButton().getButton().getWidth()) &&
+                        (y > left - gameplayButtons.getLeftButton().getButton().getHeight() && y < left)) {
                     playerShip.goLeft();
                     //pause();
                 }
 
                 //checking if player clicked RIGHT button
-                else if ((x <= rightForRightButton && x >= rightForRightButton - rightButton.getButton().getWidth()) &&
-                        (y <= left && y >= left - rightButton.getButton().getHeight())) {
+                else if ((x <= rightForRightButton && x >= rightForRightButton - gameplayButtons.getRightButton().getButton().getWidth()) &&
+                        (y <= left && y >= left - gameplayButtons.getRightButton().getButton().getHeight())) {
                     playerShip.goRight();
 
                     //resume();
                 }
 
                 //cheking if player clicked SHOOT button
-                else if ((x <= rightForRightButton / 2 + targetButton.getButton().getWidth() / 2) &&
-                        ((x >= rightForRightButton / 2 - (targetButton.getButton().getWidth() / 2)))
-                        && (y <= left && (y >= left - rightButton.getButton().getHeight()))) {
+                else if ((x <= rightForRightButton / 2 + gameplayButtons.getTargetButton().getButton().getWidth() / 2) &&
+                        ((x >= rightForRightButton / 2 - (gameplayButtons.getTargetButton().getButton().getWidth() / 2)))
+                        && (y <= left && (y >= left - gameplayButtons.getRightButton().getButton().getHeight()))) {
                     audioConfig.getSoundPool().play(audioConfig.getLaserBlastSound(), 1, 1, 0, 0, 1);
                     numberOfShoots++;
                     if (numberOfShoots > 150) {
@@ -453,10 +447,10 @@ public class Gameplay extends SurfaceView implements Runnable {
                     Log.i("Number of laser Shoots" + numberOfShoots, "+++++++++");
                     listOfRedLasers.add(new RedLaser(gameActivity, (playerShip.getxCoordinate() + (playerShip.getBitmapWidth() / 2)) - (redLaser.getLaser().getWidth() / 2)
                             , playerShip.getyCoordinate()
-                            - targetButton.getButton().getHeight() - playerShip.getRawPlayerShip().getHeight(), R.drawable.img_red_laser));
+                            - gameplayButtons.getTargetButton().getButton().getHeight() - playerShip.getRawPlayerShip().getHeight(), R.drawable.img_red_laser));
 
-                } else if ((y > 0 && y < stopButton.getButton().getHeight()) && (x < rightForRightButton && x >
-                        rightForRightButton - stopButton.getButton().getWidth())) {
+                } else if ((y > 0 && y < gameplayButtons.getStopButton().getButton().getHeight()) && (x < rightForRightButton && x >
+                        rightForRightButton - gameplayButtons.getStopButton().getButton().getWidth())) {
                     if (playing == false) {
                         resume();
                     } else if (playing == true) {
