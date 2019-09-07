@@ -26,6 +26,7 @@ import com.edgarasvilija.spaceshooter.Model.TargetButton;
 import com.edgarasvilija.spaceshooter.R;
 import com.edgarasvilija.spaceshooter.Settings.AudioConfiguration;
 import com.edgarasvilija.spaceshooter.Settings.Dashboard;
+import com.edgarasvilija.spaceshooter.Settings.PointsHandler;
 import com.edgarasvilija.spaceshooter.Settings.ShieldsHandler;
 
 import java.util.ArrayList;
@@ -43,7 +44,6 @@ public class Gameplay extends SurfaceView implements Runnable {
 
     private volatile boolean playing;
     private volatile boolean gameEnded = false;
-    private volatile static int pointsScored;
     private volatile static int numberOfShoots;
 
     Thread gameThread = null;
@@ -84,6 +84,7 @@ public class Gameplay extends SurfaceView implements Runnable {
     DrawElements drawElements;
     GameplayController controller = new GameplayController();
     ShieldsHandler shieldsHandler = new ShieldsHandler();
+    PointsHandler pointsHandler = new PointsHandler();
 
     public Gameplay(GameActivity gameActivity, int x, int y, int rightForPlayerShip)
     {
@@ -111,7 +112,8 @@ public class Gameplay extends SurfaceView implements Runnable {
 
     public void startGame()
     {
-        pointsScored = 0;
+        //pointsScored = 0;
+        pointsHandler.setPoints();
         shieldsHandler.setShieldsLeft();
         numberOfShoots = 0;
 
@@ -322,21 +324,21 @@ public class Gameplay extends SurfaceView implements Runnable {
                 audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
                 listOfRedLasers.get(i).setCoordinateY();
                 enemyShip1.setyCoordinate(0);
-                pointsScored++;
+                pointsHandler.incrementPoints();
             }
 
             if (Rect.intersects(enemyShip2.getEnemyShipRect(), listOfRedLasers.get(i).getRectLaser())) {
                 audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
                 listOfRedLasers.get(i).setCoordinateY();
                 enemyShip2.setyCoordinate(0);
-                pointsScored++;
+                pointsHandler.incrementPoints();
             }
 
             if (Rect.intersects(enemyShip3.getEnemyShipRect(), listOfRedLasers.get(i).getRectLaser())) {
                 audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
                 listOfRedLasers.get(i).setCoordinateY();
                 enemyShip3.setyCoordinate(0);
-                pointsScored++;
+                pointsHandler.incrementPoints();
             }
 
             //if players space ship's laser blast is out of the screen
@@ -379,11 +381,11 @@ public class Gameplay extends SurfaceView implements Runnable {
             //Information showed if game is still played or ended
             if (!gameEnded)
             {
-                dashboard.gamePlayingInfo(paint, canvas, pointsScored, shieldsHandler.getShieldsLeft());
+                dashboard.gamePlayingInfo(paint, canvas, pointsHandler.getPoints(), shieldsHandler.getShieldsLeft());
             }
             else
             {
-                dashboard.gameEndedInfo(paint, canvas, pointsScored, highestScore, highestScoreWritter, rightForRightButton, leftForRightButton);
+                dashboard.gameEndedInfo(paint, canvas, pointsHandler.getPoints(), highestScore, highestScoreWritter, rightForRightButton, leftForRightButton);
                 pause();
             }
             surfaceHolder.unlockCanvasAndPost(canvas);
@@ -481,13 +483,13 @@ public class Gameplay extends SurfaceView implements Runnable {
     private void decrementPointsScored()
     {
         if (enemyShip1.getyCoordinate() > gameActivity.getScreenSizeY())
-            pointsScored--;
+            pointsHandler.decrementPoints();
 
         if (enemyShip2.getyCoordinate() > gameActivity.getScreenSizeY())
-            pointsScored--;
+            pointsHandler.decrementPoints();
 
         if (enemyShip3.getyCoordinate() > gameActivity.getScreenSizeY())
-            pointsScored--;
+            pointsHandler.decrementPoints();
     }
 
     //Generate random number to decide if enemy ship shoots
