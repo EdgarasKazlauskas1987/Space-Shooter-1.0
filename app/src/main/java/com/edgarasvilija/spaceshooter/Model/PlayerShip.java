@@ -58,12 +58,12 @@ public class PlayerShip
         if (goingRight)
         {
             //playerShip goes img_right_button
-            xCoordinate += 1 * (gameActivity.getScreenSizeX() / 2) *deltaTime;
+            xCoordinate += 1 * (gameActivity.getScreenWidth() / 2) *deltaTime;
         }
 
         else if (goingLeft){
             //playerShip goes back to img_right_button
-            xCoordinate -= 1 * (gameActivity.getScreenSizeX() / 2) *deltaTime;
+            xCoordinate -= 1 * (gameActivity.getScreenWidth() / 2) *deltaTime;
         }
 
         else {
@@ -99,7 +99,7 @@ public class PlayerShip
 
     public int getMaxX()
     {
-        maxX = gameActivity.getScreenSizeX()  - playerShip.getWidth();
+        maxX = gameActivity.getScreenWidth()  - playerShip.getWidth();
 
         return maxX;
     }

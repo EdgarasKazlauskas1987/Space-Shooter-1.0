@@ -34,7 +34,7 @@ public class EnemyShip
         int whichBitmap = generator.nextInt(3);
         switch (whichBitmap) {
             case 0:
-                rawEnemyShip = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_enemy_ship2);
+                rawEnemyShip = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_enemy_ship1);
                 break;
             case 1:
                 rawEnemyShip = BitmapFactory.decodeResource(context.getResources(), R.drawable.img_enemy_ship2);
@@ -52,7 +52,7 @@ public class EnemyShip
         //putting enemy ship in a random X spot
         enemyShip = Bitmap.createScaledBitmap(rawEnemyShip, root, root, true);
 
-        xCoordinate = generator.nextInt(gameActivity.getScreenSizeX() - getRawEnemyShip().getWidth());
+        xCoordinate = generator.nextInt(gameActivity.getScreenWidth() - getRawEnemyShip().getWidth());
         Log.i("constructor " + xCoordinate, "******");
         // Initialize the hit box
         enemyShipRect = new Rect(getxCoordinate(), (int) getyCoordinate(), enemyShip.getWidth(), enemyShip.getHeight());
@@ -62,11 +62,11 @@ public class EnemyShip
     //when enemy ship leaves screen it
     //respawns at 0 position
     public void update(float deltaTime) {
-        if (yCoordinate > gameActivity.getScreenSizeY()) //if enemy ship img_left_button screen
+        if (yCoordinate > gameActivity.getScreenHeight()) //if enemy ship img_left_button screen
         {
             Random placeGenerator = new Random();
             //putting respawned enemy ship in a random X spot
-            xCoordinate = placeGenerator.nextInt(gameActivity.getScreenSizeX() - getRawEnemyShip().getWidth());
+            xCoordinate = placeGenerator.nextInt(gameActivity.getScreenWidth() - getRawEnemyShip().getWidth());
             Log.i("update " + xCoordinate, "******");
             yCoordinate = 0;
 
@@ -76,7 +76,7 @@ public class EnemyShip
             // i will multiple the distance the enemyShip has
             //to move
             //see the code in gameView class
-            yCoordinate += 3 * (gameActivity.getScreenSizeY() / 14) * deltaTime;
+            yCoordinate += 3 * (gameActivity.getScreenHeight() / 14) * deltaTime;
         }
 
         // Refresh enemyShipRect location
@@ -111,7 +111,7 @@ public class EnemyShip
         this.yCoordinate = yCoordinate;
         Random placeGenerator = new Random();
 
-        xCoordinate = placeGenerator.nextInt(gameActivity.getScreenSizeX() - getRawEnemyShip().getWidth());
+        xCoordinate = placeGenerator.nextInt(gameActivity.getScreenWidth() - getRawEnemyShip().getWidth());
         Log.i("setyCoordinate " + xCoordinate, "******");
     }
 }

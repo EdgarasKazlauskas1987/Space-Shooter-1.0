@@ -11,30 +11,30 @@ import com.edgarasvilija.spaceshooter.View.Gameplay;
 
 public class GameActivity extends Activity
 {
-    private static int screenSizeX;
-    private static int screenSizeY;
+    private static int screenWidth;
+    private static int screenHeight;
 
     private static Context mContext;
     private Gameplay gameplay;
 
-    //this is where playButton sends us from MainActivity
+    //This is where Play button sends player from MainActivity class
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         mContext = this;
 
-        //get display object in order to access screen details
+        //Get display object to access screen details
         Display display = getWindowManager().getDefaultDisplay();
-        //load resolution into a Point object
+        //Load resolution into Point object
         Point screenSize = new Point();
         display.getSize(screenSize);
-        //setting screen size to variables
-        screenSizeX = screenSize.x;
-        screenSizeY = screenSize.y;
+        //Set screen size
+        screenWidth = screenSize.x;
+        screenHeight = screenSize.y;
 
-        gameplay = new Gameplay(this, screenSize.x, screenSize.y, screenSize.x);
-        //making our game view the view for the activity
+        gameplay = new Gameplay(this, screenWidth, screenHeight, screenWidth);
+        //Make game view the view for the activity
         setContentView(gameplay);
     }
 
@@ -45,7 +45,6 @@ public class GameActivity extends Activity
         gameplay.pause();
     }
 
-    //uses method from GameView  class
     @Override
     protected void onResume()
     {
@@ -53,19 +52,25 @@ public class GameActivity extends Activity
         gameplay.resume();
     }
 
-    public int getScreenSizeX()
+    public int getScreenWidth()
     {
-        return screenSizeX;
+        return screenWidth;
     }
 
-    public int getScreenSizeY()
+    public int getScreenHeight()
     {
-        return screenSizeY;
+        return screenHeight;
     }
 
     public int getScreenArea()
     {
-        return screenSizeX * screenSizeY;
+        return screenWidth * screenHeight;
+    }
+
+    public float getTextSize(float percentage)
+    {
+        int widthPixels = getScreenWidth();
+        return widthPixels*(percentage/100.0f);
     }
 
     public  Context getContext(){

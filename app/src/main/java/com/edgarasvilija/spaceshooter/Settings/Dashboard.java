@@ -5,15 +5,23 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.edgarasvilija.spaceshooter.GameActivity;
+
 
 public class Dashboard
 {
+    GameActivity gameActivity = new GameActivity();
+    private float pointsSize;
+    private float resultSize;
+    private float restartGameSize;
+
     public void gamePlayingInfo(Paint paint, Canvas canvas, int pointsScored, int shieldsLeft)
     {
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setColor(Color.argb(255, 255, 255, 255));
-        paint.setTextSize(20);
-        canvas.drawText("Points scored: " + pointsScored, 10, 20, paint);
+        pointsSize = gameActivity.getTextSize(2.5f);
+        paint.setTextSize(pointsSize);
+        canvas.drawText("Points: " + pointsScored, 10, 20, paint);
 
         paint.setTextAlign(Paint.Align.RIGHT);
         paint.setColor(Color.argb(255, 255, 255, 255));
@@ -31,9 +39,12 @@ public class Dashboard
             highestScore = pointsScored;
         }
 
-        paint.setTextSize(80);
+        resultSize = gameActivity.getTextSize(10);
+        paint.setTextSize(resultSize);
         paint.setTextAlign(Paint.Align.CENTER);
         canvas.drawText("Your Result: " + pointsScored, rightForRightButton / 2, leftForRightButton / 2, paint);
-        canvas.drawText("Press red button to play again " + pointsScored, rightForRightButton / 2, leftForRightButton / 4, paint);
+        restartGameSize = gameActivity.getTextSize(6);
+        paint.setTextSize(restartGameSize);
+        canvas.drawText("Press red button to play again", rightForRightButton / 2, leftForRightButton / 3, paint);
     }
 }

@@ -45,13 +45,13 @@ public class Meteor
 
     public void update(float deltaTime)
     {
-        if (yCoordinate > gameActivity.getScreenSizeY())
+        if (yCoordinate > gameActivity.getScreenHeight())
         {
             //makes meteor appear only within screen
-            xCoordinate = generator.nextInt(gameActivity.getScreenSizeX() - getRawMeteor().getWidth());
+            xCoordinate = generator.nextInt(gameActivity.getScreenWidth() - getRawMeteor().getWidth());
             yCoordinate = 0;
         } else {
-            yCoordinate += 3 * (gameActivity.getScreenSizeY() / 15) * deltaTime;
+            yCoordinate += 3 * (gameActivity.getScreenHeight() / 15) * deltaTime;
         }
 
         // Refresh hit box location

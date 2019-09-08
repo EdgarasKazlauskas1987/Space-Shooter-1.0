@@ -51,11 +51,10 @@ public class Gameplay extends SurfaceView implements Runnable {
     private Canvas canvas;
     private SurfaceHolder surfaceHolder;
 
+    //ToDo refactore these variables
     public int right;
-    public int rightForPlayerShip;
-    public int rightForRightButton;
-    public int leftForRightButton;
-    public int left;
+    public int screenWidth;
+    public int screenHeight;
 
     private int framesPerSecond = 0;
 
@@ -75,7 +74,7 @@ public class Gameplay extends SurfaceView implements Runnable {
     GameplayButtons gameplayButtons = new GameplayButtons();
     GameplayShips gameplayShips = new GameplayShips();
 
-    public Gameplay(GameActivity gameActivity, int x, int y, int rightForPlayerShip)
+    public Gameplay(GameActivity gameActivity, int screenWidth, int screenHeight, int rightForPlayerShip)
     {
         super(gameActivity);
         this.gameActivity = gameActivity;
@@ -88,10 +87,8 @@ public class Gameplay extends SurfaceView implements Runnable {
         highestScore = highestScoreLoader.getInt("highestScore", 0);
 
         right = 0;
-        left = y;
-        this.rightForPlayerShip = rightForPlayerShip;
-        rightForRightButton = x;
-        leftForRightButton = y;
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
         surfaceHolder = getHolder();
 
         paint = new Paint();
@@ -105,11 +102,11 @@ public class Gameplay extends SurfaceView implements Runnable {
         shieldsHandler.setShieldsLeft();
         numberOfShoots = 0;
 
-        gameplayButtons.createButtons(context, rightForRightButton, leftForRightButton);
-        gameplayShips.createShips(context, rightForRightButton, leftForRightButton);
+        gameplayButtons.createButtons(context, screenWidth, screenHeight);
+        gameplayShips.createShips(context, screenWidth, screenHeight);
 
-        redLaser = new RedLaser(gameActivity, rightForRightButton ,leftForRightButton, R.drawable.img_red_laser);
-        meteor1 = new Meteor(context, randomGenerator.nextInt(gameActivity.getScreenSizeX() + 1), 0);
+        redLaser = new RedLaser(gameActivity, screenWidth, screenHeight, R.drawable.img_red_laser);
+        meteor1 = new Meteor(context, randomGenerator.nextInt(gameActivity.getScreenWidth() + 1), 0);
         listOfRedLasers = new ArrayList<>();
         enemyShip1LaserBlasts = new ArrayList<>();
 
@@ -163,7 +160,7 @@ public class Gameplay extends SurfaceView implements Runnable {
     {
         decrementPointsScored();
 
-        gameplayShips.getPlayerShip().update(deltaTime, left - gameplayButtons.getTargetButton().getButton().getHeight() - gameplayShips.getPlayerShip().getRawPlayerShip().getHeight());
+        gameplayShips.getPlayerShip().update(deltaTime, screenHeight - gameplayButtons.getTargetButton().getButton().getHeight() - gameplayShips.getPlayerShip().getRawPlayerShip().getHeight());
 
         gameplayShips.getEnemyShip1().update(deltaTime);
         gameplayShips.getEnemyShip2().update(deltaTime);
@@ -181,7 +178,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         enemyShipsLaserBlasts.add(enemyShip3LaserBlasts);*/
 
         for (int i = 0; i < enemyShip1LaserBlasts.size(); i++) {
-            if (enemyShip1LaserBlasts.get(i).getCoordinateY() > gameActivity.getScreenSizeY()) {
+            if (enemyShip1LaserBlasts.get(i).getCoordinateY() > gameActivity.getScreenHeight()) {
                 enemyShip1LaserBlasts.remove(enemyShip1LaserBlasts.get(i));
 
             } else {
@@ -190,7 +187,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         }
 
         for (int i = 0; i < enemyShip2LaserBlasts.size(); i++) {
-            if (enemyShip2LaserBlasts.get(i).getCoordinateY() > gameActivity.getScreenSizeY()) {
+            if (enemyShip2LaserBlasts.get(i).getCoordinateY() > gameActivity.getScreenHeight()) {
                 enemyShip2LaserBlasts.remove(enemyShip2LaserBlasts.get(i));
 
             } else {
@@ -199,7 +196,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         }
 
         for (int i = 0; i < enemyShip3LaserBlasts.size(); i++) {
-            if (enemyShip3LaserBlasts.get(i).getCoordinateY() > gameActivity.getScreenSizeY()) {
+            if (enemyShip3LaserBlasts.get(i).getCoordinateY() > gameActivity.getScreenHeight()) {
                 enemyShip3LaserBlasts.remove(enemyShip3LaserBlasts.get(i));
 
             } else {
@@ -340,14 +337,14 @@ public class Gameplay extends SurfaceView implements Runnable {
             canvas.drawColor(Color.argb(255, 0, 0, 0));
 
             //Draw Ships
-            drawElements.drawPlayerShip(paint, canvas, gameplayShips.getPlayerShip(), gameplayButtons.getTargetButton(), left);
+            drawElements.drawPlayerShip(paint, canvas, gameplayShips.getPlayerShip(), gameplayButtons.getTargetButton(), screenHeight);
             drawElements.drawEnemyShips(paint, canvas, gameplayShips.getEnemyShip1(), gameplayShips.getEnemyShip2(), gameplayShips.getEnemyShip3());
 
             //Draw Buttons
-            drawElements.drawLeftButton(paint, canvas, gameplayButtons.getLeftButton(), right, left);
-            drawElements.drawRightButton(paint, canvas, gameplayButtons.getRightButton(), rightForRightButton, leftForRightButton);
-            drawElements.drawTargetButton(paint, canvas, gameplayButtons.getTargetButton(), rightForRightButton, left);
-            drawElements. drawStopButton(paint, canvas, gameplayButtons.getStopButton(), rightForRightButton);
+            drawElements.drawLeftButton(paint, canvas, gameplayButtons.getLeftButton(), right, screenHeight);
+            drawElements.drawRightButton(paint, canvas, gameplayButtons.getRightButton(), screenWidth, screenHeight);
+            drawElements.drawTargetButton(paint, canvas, gameplayButtons.getTargetButton(), screenWidth, screenHeight);
+            drawElements. drawStopButton(paint, canvas, gameplayButtons.getStopButton(), screenWidth);
 
             //Draw Laser blasts
             drawElements. drawPlayerLaserBlasts(paint, canvas, listOfRedLasers);
@@ -365,7 +362,7 @@ public class Gameplay extends SurfaceView implements Runnable {
             }
             else
             {
-                dashboard.gameEndedInfo(paint, canvas, pointsHandler.getPoints(), highestScore, highestScoreWritter, rightForRightButton, leftForRightButton);
+                dashboard.gameEndedInfo(paint, canvas, pointsHandler.getPoints(), highestScore, highestScoreWritter, screenWidth, screenHeight);
                 pause();
             }
             surfaceHolder.unlockCanvasAndPost(canvas);
@@ -408,23 +405,23 @@ public class Gameplay extends SurfaceView implements Runnable {
 
                 //checking if we have pressed LEFT button
                 if ((x > right && x < right + gameplayButtons.getLeftButton().getButton().getWidth()) &&
-                        (y > left - gameplayButtons.getLeftButton().getButton().getHeight() && y < left)) {
+                        (y > screenHeight - gameplayButtons.getLeftButton().getButton().getHeight() && y < screenHeight)) {
                     gameplayShips.getPlayerShip().goLeft();
                     //pause();
                 }
 
                 //checking if player clicked RIGHT button
-                else if ((x <= rightForRightButton && x >= rightForRightButton - gameplayButtons.getRightButton().getButton().getWidth()) &&
-                        (y <= left && y >= left - gameplayButtons.getRightButton().getButton().getHeight())) {
+                else if ((x <= screenWidth && x >= screenWidth - gameplayButtons.getRightButton().getButton().getWidth()) &&
+                        (y <= screenHeight && y >= screenHeight - gameplayButtons.getRightButton().getButton().getHeight())) {
                     gameplayShips.getPlayerShip().goRight();
 
                     //resume();
                 }
 
                 //cheking if player clicked SHOOT button
-                else if ((x <= rightForRightButton / 2 + gameplayButtons.getTargetButton().getButton().getWidth() / 2) &&
-                        ((x >= rightForRightButton / 2 - (gameplayButtons.getTargetButton().getButton().getWidth() / 2)))
-                        && (y <= left && (y >= left - gameplayButtons.getRightButton().getButton().getHeight()))) {
+                else if ((x <= screenWidth / 2 + gameplayButtons.getTargetButton().getButton().getWidth() / 2) &&
+                        ((x >= screenWidth / 2 - (gameplayButtons.getTargetButton().getButton().getWidth() / 2)))
+                        && (y <= screenHeight && (y >= screenHeight - gameplayButtons.getRightButton().getButton().getHeight()))) {
                     audioConfig.getSoundPool().play(audioConfig.getLaserBlastSound(), 1, 1, 0, 0, 1);
                     numberOfShoots++;
                     if (numberOfShoots > 150) {
@@ -435,8 +432,8 @@ public class Gameplay extends SurfaceView implements Runnable {
                             , gameplayShips.getPlayerShip().getyCoordinate()
                             - gameplayButtons.getTargetButton().getButton().getHeight() - gameplayShips.getPlayerShip().getRawPlayerShip().getHeight(), R.drawable.img_red_laser));
 
-                } else if ((y > 0 && y < gameplayButtons.getStopButton().getButton().getHeight()) && (x < rightForRightButton && x >
-                        rightForRightButton - gameplayButtons.getStopButton().getButton().getWidth())) {
+                } else if ((y > 0 && y < gameplayButtons.getStopButton().getButton().getHeight()) && (x < screenWidth && x >
+                        screenWidth - gameplayButtons.getStopButton().getButton().getWidth())) {
                     if (playing == false) {
                         resume();
                     } else if (playing == true) {
@@ -462,13 +459,13 @@ public class Gameplay extends SurfaceView implements Runnable {
     //Decrement points scored when enemy ship leaves screen
     private void decrementPointsScored()
     {
-        if (gameplayShips.getEnemyShip1().getyCoordinate() > gameActivity.getScreenSizeY())
+        if (gameplayShips.getEnemyShip1().getyCoordinate() > gameActivity.getScreenHeight())
             pointsHandler.decrementPoints();
 
-        if (gameplayShips.getEnemyShip2().getyCoordinate() > gameActivity.getScreenSizeY())
+        if (gameplayShips.getEnemyShip2().getyCoordinate() > gameActivity.getScreenHeight())
             pointsHandler.decrementPoints();
 
-        if (gameplayShips.getEnemyShip3().getyCoordinate() > gameActivity.getScreenSizeY())
+        if (gameplayShips.getEnemyShip3().getyCoordinate() > gameActivity.getScreenHeight())
             pointsHandler.decrementPoints();
     }
 
