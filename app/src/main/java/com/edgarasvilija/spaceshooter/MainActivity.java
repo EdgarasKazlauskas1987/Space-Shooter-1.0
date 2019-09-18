@@ -27,18 +27,18 @@ public class MainActivity extends Activity implements View.OnClickListener
         textFastestTime.setText("Best Result:  " + bestResult);
 
         //Getting reference to Play button in layout
-        final Button playButton = (Button) findViewById(R.id.playButton);
+        Button playButton = (Button) findViewById(R.id.playButton);
         //Listening for clicks
         playButton.setOnClickListener(this);
 
-/*        final Button quitButton = (Button) findViewById(R.id.buttonQuit);
+        Button quitButton = (Button) findViewById(R.id.buttonQuit);
         quitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
                 System.exit(0);
             }
-        });*/
+        });
     }
 
     //After clicking Play button
