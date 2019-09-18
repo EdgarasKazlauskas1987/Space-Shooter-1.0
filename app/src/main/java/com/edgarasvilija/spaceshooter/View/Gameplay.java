@@ -358,7 +358,7 @@ public class Gameplay extends SurfaceView implements Runnable {
             drawElements. drawStopButton(paint, canvas, gameplayButtons.getStopButton(), screenWidth);
 
             //Draw Shields
-            drawElements.drawShields(paint, canvas, shields, screenWidth, screenHeight);
+            drawElements.drawShields(paint, canvas, shields, screenHeight);
 
             //Draw Laser blasts
             drawElements. drawPlayerLaserBlasts(paint, canvas, listOfRedLasers);

@@ -15,11 +15,11 @@ public class GameplayShields
     private Shield shield2;
     private Shield shield3;
 
-    public void createShields(ArrayList<Shield> shields, Context context, int rightForRightButton, int leftForRightButton)
+    public void createShields(ArrayList<Shield> shields, Context context, int screenWidth, int screenHeight)
     {
-        shield1 = new Shield(context, rightForRightButton, leftForRightButton, R.drawable.img_shield);
-        shield2 = new Shield(context, rightForRightButton, leftForRightButton, R.drawable.img_shield);
-        shield3 = new Shield(context, rightForRightButton, leftForRightButton, R.drawable.img_shield);
+        shield1 = new Shield(context, screenWidth, screenHeight, R.drawable.img_shield);
+        shield2 = new Shield(context, screenWidth, screenHeight, R.drawable.img_shield);
+        shield3 = new Shield(context, screenWidth, screenHeight, R.drawable.img_shield);
 
         shields.addAll(Arrays.asList(shield1, shield2, shield3));
     }

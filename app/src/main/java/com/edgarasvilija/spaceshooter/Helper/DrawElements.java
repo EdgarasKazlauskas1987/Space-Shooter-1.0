@@ -19,10 +19,10 @@ import java.util.List;
 
 public class DrawElements
 {
-    public void drawPlayerShip(Paint paint, Canvas canvas, PlayerShip playerShip, TargetButton button, int left)
+    public void drawPlayerShip(Paint paint, Canvas canvas, PlayerShip playerShip, TargetButton button, int screenHeight)
     {
         canvas.drawBitmap(playerShip.getRawPlayerShip(), playerShip.getxCoordinate(),
-                left - button.getButton().getHeight() - playerShip.getRawPlayerShip().getHeight(), paint);
+                screenHeight - button.getButton().getHeight() - playerShip.getRawPlayerShip().getHeight(), paint);
     }
 
     //ToDo: Change to List of Enemy Ships
@@ -39,25 +39,25 @@ public class DrawElements
         canvas.drawBitmap(meteor1.getRawMeteor(), meteor1.getXCoordinate(), meteor1.getYCoordinate(), paint);
     }
 
-    public void drawLeftButton(Paint paint, Canvas canvas, LeftButton button, int right, int left)
+    public void drawLeftButton(Paint paint, Canvas canvas, LeftButton button, int right, int screenHeight)
     {
-        canvas.drawBitmap(button.getButton(), right, left - button.getButton().getHeight(), paint);
+        canvas.drawBitmap(button.getButton(), right, screenHeight - button.getButton().getHeight(), paint);
     }
 
-    public void drawRightButton(Paint paint, Canvas canvas, RightButton button, int rightForRightButton, int leftForRightButton)
+    public void drawRightButton(Paint paint, Canvas canvas, RightButton button, int screenWidth, int screenHeight)
     {
-        canvas.drawBitmap(button.getButton(), rightForRightButton -
-                button.getButton().getWidth(), leftForRightButton -
+        canvas.drawBitmap(button.getButton(), screenWidth -
+                button.getButton().getWidth(), screenHeight -
                 button.getButton().getHeight(), paint);
     }
 
-    public void drawTargetButton(Paint paint, Canvas canvas, TargetButton button, int rightForRightButton, int left)
+    public void drawTargetButton(Paint paint, Canvas canvas, TargetButton button, int screenWidth, int screenHeight)
     {
-        canvas.drawBitmap(button.getButton(), ((rightForRightButton / 2) - (button.getButton().getWidth() / 2)),
-                left - button.getButton().getHeight(), paint);
+        canvas.drawBitmap(button.getButton(), ((screenWidth / 2) - (button.getButton().getWidth() / 2)),
+                screenHeight - button.getButton().getHeight(), paint);
     }
 
-    public void drawShields(Paint paint, Canvas canvas, ArrayList<Shield> shields, int rightForRightButton, int left)
+    public void drawShields(Paint paint, Canvas canvas, ArrayList<Shield> shields, int screenHeight)
     {
         if (shields.size() > 0)
         {
@@ -65,16 +65,15 @@ public class DrawElements
 
             for (int i = 0; i < shields.size(); i++)
             {
-                canvas.drawBitmap(shields.get(i).getShield(), 0 , left/6 - height, paint);
+                canvas.drawBitmap(shields.get(i).getShield(), 0 , screenHeight/6 - height, paint);
                 height += shields.get(i).getShield().getWidth();
             }
         }
     }
 
-    public void drawStopButton(Paint paint, Canvas canvas, StopButton button, int rightForRightButton)
+    public void drawStopButton(Paint paint, Canvas canvas, StopButton button, int screenWidth)
     {
-
-        canvas.drawBitmap(button.getButton(), rightForRightButton - button.getButton().getWidth(), 0, paint);
+        canvas.drawBitmap(button.getButton(), screenWidth - button.getButton().getWidth(), 0, paint);
     }
 
     public void drawPlayerLaserBlasts(Paint paint, Canvas canvas, List<RedLaser> listOfRedLasers)

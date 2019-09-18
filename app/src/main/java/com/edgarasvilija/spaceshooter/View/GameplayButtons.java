@@ -15,12 +15,12 @@ public class GameplayButtons
     private TargetButton targetButton;
     private StopButton stopButton;
 
-    public void createButtons(Context context, int rightForRightButton, int leftForRightButton)
+    public void createButtons(Context context, int screenWidth, int screenHeight)
     {
-        leftButton = new LeftButton(context, rightForRightButton, 0, R.drawable.img_left_button);
-        rightButton = new RightButton(context, rightForRightButton, 0, R.drawable.img_right_button);
-        targetButton = new TargetButton(context, rightForRightButton, leftForRightButton, R.drawable.img_target);
-        stopButton = new StopButton(context, rightForRightButton, leftForRightButton, R.drawable.img_stop_button);
+        leftButton = new LeftButton(context, screenWidth, 0, R.drawable.img_left_button);
+        rightButton = new RightButton(context, screenWidth, 0, R.drawable.img_right_button);
+        targetButton = new TargetButton(context, screenWidth, screenHeight, R.drawable.img_target);
+        stopButton = new StopButton(context, screenWidth, screenHeight, R.drawable.img_stop_button);
     }
 
     public LeftButton getLeftButton()

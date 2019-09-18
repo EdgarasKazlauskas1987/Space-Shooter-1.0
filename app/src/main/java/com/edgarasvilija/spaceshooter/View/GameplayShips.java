@@ -12,15 +12,15 @@ public class GameplayShips
     private EnemyShip enemyShip2;
     private EnemyShip enemyShip3;
 
-    public void createShips(Context context, int rightForRightButton, int leftForRightButton)
+    public void createShips(Context context, int screenWidth, int screenHeight)
     {
-        createPlayerShip(context, rightForRightButton, leftForRightButton);
+        createPlayerShip(context, screenWidth, screenHeight);
         createEnemyShips(context);
     }
 
-    private void createPlayerShip(Context context, int rightForRightButton, int leftForRightButton)
+    private void createPlayerShip(Context context, int screenWidth, int screenHeight)
     {
-        playerShip = new PlayerShip(context, rightForRightButton/2 , leftForRightButton);
+        playerShip = new PlayerShip(context, screenWidth/2 , screenHeight);
     }
 
     private void createEnemyShips(Context context)
