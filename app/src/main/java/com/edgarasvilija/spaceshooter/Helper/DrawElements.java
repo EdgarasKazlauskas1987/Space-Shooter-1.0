@@ -10,9 +10,11 @@ import com.edgarasvilija.spaceshooter.Model.Meteor;
 import com.edgarasvilija.spaceshooter.Model.PlayerShip;
 import com.edgarasvilija.spaceshooter.Model.RedLaser;
 import com.edgarasvilija.spaceshooter.Model.RightButton;
+import com.edgarasvilija.spaceshooter.Model.Shield;
 import com.edgarasvilija.spaceshooter.Model.StopButton;
 import com.edgarasvilija.spaceshooter.Model.TargetButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DrawElements
@@ -55,8 +57,23 @@ public class DrawElements
                 left - button.getButton().getHeight(), paint);
     }
 
+    public void drawShields(Paint paint, Canvas canvas, ArrayList<Shield> shields, int rightForRightButton, int left)
+    {
+        if (shields.size() > 0)
+        {
+            int height = 0;
+
+            for (int i = 0; i < shields.size(); i++)
+            {
+                canvas.drawBitmap(shields.get(i).getShield(), 0 , left/6 - height, paint);
+                height += shields.get(i).getShield().getWidth();
+            }
+        }
+    }
+
     public void drawStopButton(Paint paint, Canvas canvas, StopButton button, int rightForRightButton)
     {
+
         canvas.drawBitmap(button.getButton(), rightForRightButton - button.getButton().getWidth(), 0, paint);
     }
 

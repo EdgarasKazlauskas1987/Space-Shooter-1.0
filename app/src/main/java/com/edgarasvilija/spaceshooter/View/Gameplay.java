@@ -17,6 +17,7 @@ import com.edgarasvilija.spaceshooter.Helper.DrawElements;
 import com.edgarasvilija.spaceshooter.Model.BlueLaser;
 import com.edgarasvilija.spaceshooter.Model.RedLaser;
 import com.edgarasvilija.spaceshooter.Model.Meteor;
+import com.edgarasvilija.spaceshooter.Model.Shield;
 import com.edgarasvilija.spaceshooter.R;
 import com.edgarasvilija.spaceshooter.Settings.AudioConfiguration;
 import com.edgarasvilija.spaceshooter.Settings.Dashboard;
@@ -63,6 +64,7 @@ public class Gameplay extends SurfaceView implements Runnable {
     public static ArrayList<BlueLaser> enemyShip2LaserBlasts = new ArrayList<>();
     public static ArrayList<BlueLaser> enemyShip3LaserBlasts = new ArrayList<>();
     public static ArrayList<ArrayList<BlueLaser>> enemyShipsLaserBlasts = new ArrayList<>();
+    public static ArrayList<Shield> shields = new ArrayList<>();
 
     AudioConfiguration audioConfig;
     Dashboard dashboard = new Dashboard();
@@ -73,6 +75,7 @@ public class Gameplay extends SurfaceView implements Runnable {
 
     GameplayButtons gameplayButtons = new GameplayButtons();
     GameplayShips gameplayShips = new GameplayShips();
+    GameplayShields gameplayShields = new GameplayShields();
 
     public Gameplay(GameActivity gameActivity, int screenWidth, int screenHeight, int rightForPlayerShip)
     {
@@ -104,6 +107,7 @@ public class Gameplay extends SurfaceView implements Runnable {
 
         gameplayButtons.createButtons(context, screenWidth, screenHeight);
         gameplayShips.createShips(context, screenWidth, screenHeight);
+        gameplayShields.createShields(shields, context, screenWidth, screenHeight);
 
         redLaser = new RedLaser(gameActivity, screenWidth, screenHeight, R.drawable.img_red_laser);
         meteor1 = new Meteor(context, randomGenerator.nextInt(gameActivity.getScreenWidth() + 1), 0);
@@ -215,6 +219,7 @@ public class Gameplay extends SurfaceView implements Runnable {
             audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
             gameplayShips.getEnemyShip1().setyCoordinate(0);
             shieldsHandler.decrementShieldsLeft();
+            gameplayShields.removeShield(shields);
             decrementPointsScored();
             if (!shieldsHandler.areShieldsLeft()) {
                 gameEnded = true;
@@ -226,6 +231,7 @@ public class Gameplay extends SurfaceView implements Runnable {
             audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
             gameplayShips.getEnemyShip2().setyCoordinate(0);
             shieldsHandler.decrementShieldsLeft();
+            gameplayShields.removeShield(shields);
             decrementPointsScored();
             if (!shieldsHandler.areShieldsLeft()) {
                 gameEnded = true;
@@ -237,6 +243,7 @@ public class Gameplay extends SurfaceView implements Runnable {
             audioConfig.getSoundPool().play(audioConfig.getExplosionSound(), 1, 1, 0, 0, 1);
             gameplayShips.getEnemyShip3().setyCoordinate(0);
             shieldsHandler.decrementShieldsLeft();
+            gameplayShields.removeShield(shields);
             decrementPointsScored();
             if (!shieldsHandler.areShieldsLeft()) {
                 gameEnded = true;
@@ -250,6 +257,7 @@ public class Gameplay extends SurfaceView implements Runnable {
             audioConfig.playExplosionSound();
             meteor1.setYCoorinate();
             shieldsHandler.decrementShieldsLeft();
+            gameplayShields.removeShield(shields);
             if (!shieldsHandler.areShieldsLeft()) {
                 gameEnded = true;
             }
@@ -263,6 +271,7 @@ public class Gameplay extends SurfaceView implements Runnable {
                 enemyShip1LaserBlasts.get(i).setCoordinateY();
                 decrementPointsScored();
                 shieldsHandler.decrementShieldsLeft();
+                gameplayShields.removeShield(shields);
                 if (!shieldsHandler.areShieldsLeft()) {
                     gameEnded = true;
                 }
@@ -275,6 +284,7 @@ public class Gameplay extends SurfaceView implements Runnable {
                 enemyShip2LaserBlasts.get(i).setCoordinateY();
                 decrementPointsScored();
                 shieldsHandler.decrementShieldsLeft();
+                gameplayShields.removeShield(shields);
                 if (!shieldsHandler.areShieldsLeft()) {
                     gameEnded = true;
                 }
@@ -287,6 +297,7 @@ public class Gameplay extends SurfaceView implements Runnable {
                 enemyShip3LaserBlasts.get(i).setCoordinateY();
                 decrementPointsScored();
                 shieldsHandler.decrementShieldsLeft();
+                gameplayShields.removeShield(shields);
                 if (!shieldsHandler.areShieldsLeft()) {
                     gameEnded = true;
                 }
@@ -345,6 +356,9 @@ public class Gameplay extends SurfaceView implements Runnable {
             drawElements.drawRightButton(paint, canvas, gameplayButtons.getRightButton(), screenWidth, screenHeight);
             drawElements.drawTargetButton(paint, canvas, gameplayButtons.getTargetButton(), screenWidth, screenHeight);
             drawElements. drawStopButton(paint, canvas, gameplayButtons.getStopButton(), screenWidth);
+
+            //Draw Shields
+            drawElements.drawShields(paint, canvas, shields, screenWidth, screenHeight);
 
             //Draw Laser blasts
             drawElements. drawPlayerLaserBlasts(paint, canvas, listOfRedLasers);

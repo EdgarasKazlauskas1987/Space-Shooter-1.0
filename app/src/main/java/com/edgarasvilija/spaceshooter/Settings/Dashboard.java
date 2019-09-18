@@ -22,11 +22,6 @@ public class Dashboard
         pointsSize = gameActivity.getTextSize(2.5f);
         paint.setTextSize(pointsSize);
         canvas.drawText("Points: " + pointsScored, 10, 20, paint);
-
-        paint.setTextAlign(Paint.Align.RIGHT);
-        paint.setColor(Color.argb(255, 255, 255, 255));
-        paint.setTextSize(20);
-        canvas.drawText("Lives img_left_button: " + shieldsLeft, 10, 200, paint);
     }
 
     public void gameEndedInfo(Paint paint, Canvas canvas, int pointsScored, int highestScore, SharedPreferences.Editor highestScoreWritter,
