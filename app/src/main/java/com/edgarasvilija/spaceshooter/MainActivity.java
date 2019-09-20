@@ -31,6 +31,18 @@ public class MainActivity extends Activity implements View.OnClickListener
         //Listening for clicks
         playButton.setOnClickListener(this);
 
+        //Start Credits activity
+        Button creditsButton = (Button) findViewById(R.id.buttonCredits);
+        creditsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), CreditsActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        //Quit game
         Button quitButton = (Button) findViewById(R.id.buttonQuit);
         quitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,7 +53,7 @@ public class MainActivity extends Activity implements View.OnClickListener
         });
     }
 
-    //After clicking Play button
+    //Start Game activity
     @Override
     public void onClick(View view)
     {
