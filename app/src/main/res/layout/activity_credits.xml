@@ -41,8 +41,8 @@
 
     <EditText
         android:id="@+id/editText2"
-        android:layout_width="310dp"
-        android:layout_height="493dp"
+        android:layout_width="296dp"
+        android:layout_height="485dp"
         android:layout_marginStart="46dp"
         android:layout_marginLeft="46dp"
         android:layout_marginTop="100dp"

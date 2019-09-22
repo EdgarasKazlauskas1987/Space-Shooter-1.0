@@ -23,6 +23,7 @@ import com.edgarasvilija.spaceshooter.Settings.AudioConfiguration;
 import com.edgarasvilija.spaceshooter.Settings.Dashboard;
 import com.edgarasvilija.spaceshooter.Settings.PointsHandler;
 import com.edgarasvilija.spaceshooter.Settings.ShieldsHandler;
+import com.edgarasvilija.spaceshooter.Settings.TimeHandler;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -52,19 +53,17 @@ public class Gameplay extends SurfaceView implements Runnable {
     private Canvas canvas;
     private SurfaceHolder surfaceHolder;
 
-    //ToDo refactore these variables
-    public int right;
-    public int screenWidth;
-    public int screenHeight;
+    private int screenWidth;
+    private int screenHeight;
 
+    private final int xLeftCorner = 0;
     private int framesPerSecond = 0;
 
-    public static ArrayList<RedLaser> listOfRedLasers = new ArrayList<>() ;
-    public static ArrayList<BlueLaser> enemyShip1LaserBlasts = new ArrayList<>();
-    public static ArrayList<BlueLaser> enemyShip2LaserBlasts = new ArrayList<>();
-    public static ArrayList<BlueLaser> enemyShip3LaserBlasts = new ArrayList<>();
-    public static ArrayList<ArrayList<BlueLaser>> enemyShipsLaserBlasts = new ArrayList<>();
-    public static ArrayList<Shield> shields = new ArrayList<>();
+    private static ArrayList<RedLaser> listOfRedLasers = new ArrayList<>() ;
+    private static ArrayList<BlueLaser> enemyShip1LaserBlasts = new ArrayList<>();
+    private static ArrayList<BlueLaser> enemyShip2LaserBlasts = new ArrayList<>();
+    private static ArrayList<BlueLaser> enemyShip3LaserBlasts = new ArrayList<>();
+    private static ArrayList<Shield> shields = new ArrayList<>();
 
     AudioConfiguration audioConfig;
     Dashboard dashboard = new Dashboard();
@@ -77,23 +76,23 @@ public class Gameplay extends SurfaceView implements Runnable {
     GameplayShips gameplayShips = new GameplayShips();
     GameplayShields gameplayShields = new GameplayShields();
 
+    //TimeHandler timeHandler;
+
     public Gameplay(GameActivity gameActivity, int screenWidth, int screenHeight, int rightForPlayerShip)
     {
         super(gameActivity);
         this.gameActivity = gameActivity;
         this.context = gameActivity;
 
-        //getting file and if it does not exist creating it
+        //Getting Highest Score file and if it does not exist creating it
         highestScoreLoader = context.getSharedPreferences("HiScores", context.MODE_PRIVATE);
         highestScoreWritter = highestScoreLoader.edit();
-        //getting fastest time from entry, if its not there then result is 0
+        //Getting Highest Score and if its not there then result is 0
         highestScore = highestScoreLoader.getInt("highestScore", 0);
 
-        right = 0;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         surfaceHolder = getHolder();
-
         paint = new Paint();
 
         startGame();
@@ -113,8 +112,10 @@ public class Gameplay extends SurfaceView implements Runnable {
         meteor1 = new Meteor(context, randomGenerator.nextInt(gameActivity.getScreenWidth() + 1), 0);
         listOfRedLasers = new ArrayList<>();
         enemyShip1LaserBlasts = new ArrayList<>();
-
         audioConfig = new AudioConfiguration(context);
+
+/*        timeHandler = new TimeHandler(30000, 1000);
+        timeHandler.start();*/
     }
 
     @Override
@@ -162,6 +163,7 @@ public class Gameplay extends SurfaceView implements Runnable {
 
     private void update(float deltaTime)
     {
+        //Log.d("Edgaras","Seconds left: " + timeHandler.getCountdownMilliseconds() );
         decrementPointsScored();
 
         gameplayShips.getPlayerShip().update(deltaTime, screenHeight - gameplayButtons.getTargetButton().getButton().getHeight() - gameplayShips.getPlayerShip().getRawPlayerShip().getHeight());
@@ -352,7 +354,7 @@ public class Gameplay extends SurfaceView implements Runnable {
             drawElements.drawEnemyShips(paint, canvas, gameplayShips.getEnemyShip1(), gameplayShips.getEnemyShip2(), gameplayShips.getEnemyShip3());
 
             //Draw Buttons
-            drawElements.drawLeftButton(paint, canvas, gameplayButtons.getLeftButton(), right, screenHeight);
+            drawElements.drawLeftButton(paint, canvas, gameplayButtons.getLeftButton(), xLeftCorner, screenHeight);
             drawElements.drawRightButton(paint, canvas, gameplayButtons.getRightButton(), screenWidth, screenHeight);
             drawElements.drawTargetButton(paint, canvas, gameplayButtons.getTargetButton(), screenWidth, screenHeight);
             drawElements. drawStopButton(paint, canvas, gameplayButtons.getStopButton(), screenWidth);
@@ -383,9 +385,9 @@ public class Gameplay extends SurfaceView implements Runnable {
         }
     }
 
-    public void pause()
-    {
+    public void pause() {
         playing = false;
+        //timeHandler.cancel();
         try {
             gameThread.join(10);
         } catch (InterruptedException e) {
@@ -397,6 +399,8 @@ public class Gameplay extends SurfaceView implements Runnable {
     public void resume()
     {
         playing = true;
+/*        timeHandler = new TimeHandler(timeHandler.getCountdownMilliseconds(), 1000);
+        timeHandler.start();*/
         gameThread = new Thread(this);
         gameThread.start();
     }
@@ -418,7 +422,7 @@ public class Gameplay extends SurfaceView implements Runnable {
                 int y = (int) motionEvent.getY();
 
                 //checking if we have pressed LEFT button
-                if ((x > right && x < right + gameplayButtons.getLeftButton().getButton().getWidth()) &&
+                if ((x > xLeftCorner && x < xLeftCorner + gameplayButtons.getLeftButton().getButton().getWidth()) &&
                         (y > screenHeight - gameplayButtons.getLeftButton().getButton().getHeight() && y < screenHeight)) {
                     gameplayShips.getPlayerShip().goLeft();
                     //pause();
