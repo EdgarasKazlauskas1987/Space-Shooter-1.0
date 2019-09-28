@@ -81,7 +81,7 @@ public class Gameplay extends SurfaceView implements Runnable {
     GameplayShips gameplayShips = new GameplayShips();
     GameplayShields gameplayShields = new GameplayShields();
 
-    public Gameplay(GameActivity gameActivity, int screenWidth, int screenHeight, int rightForPlayerShip)
+    public Gameplay(GameActivity gameActivity, int screenWidth, int screenHeight)
     {
         super(gameActivity);
         this.gameActivity = gameActivity;
@@ -120,7 +120,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
         timeWhenStopped = 0;
-        levelTime = 10;
+        levelTime = 60;
     }
 
     @Override

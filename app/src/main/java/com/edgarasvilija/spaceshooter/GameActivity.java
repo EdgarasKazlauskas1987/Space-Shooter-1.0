@@ -33,7 +33,7 @@ public class GameActivity extends Activity
         screenWidth = screenSize.x;
         screenHeight = screenSize.y;
 
-        gameplay = new Gameplay(this, screenWidth, screenHeight, screenWidth);
+        gameplay = new Gameplay(this, screenWidth, screenHeight);
         //Make game view the view for the activity
         setContentView(gameplay);
     }

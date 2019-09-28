@@ -28,7 +28,7 @@ public class Dashboard
     }
 
     public void gameEndedInfo(Paint paint, Canvas canvas, int pointsScored, int highestScore, SharedPreferences.Editor highestScoreWritter,
-        int rightForRightButton, int leftForRightButton )
+        int screenWidth, int screenHeight )
     {
         if (pointsScored > highestScore)
         {
@@ -40,9 +40,9 @@ public class Dashboard
         resultSize = gameActivity.getTextSize(10);
         paint.setTextSize(resultSize);
         paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText("Your Result: " + pointsScored, rightForRightButton / 2, leftForRightButton / 2, paint);
+        canvas.drawText("Your Result: " + pointsScored, screenWidth / 2, screenHeight / 2, paint);
         restartGameSize = gameActivity.getTextSize(6);
         paint.setTextSize(restartGameSize);
-        canvas.drawText("Press red button to play again", rightForRightButton / 2, leftForRightButton / 3, paint);
+        canvas.drawText("Press red button to play again", screenWidth / 2, screenHeight / 3, paint);
     }
 }
