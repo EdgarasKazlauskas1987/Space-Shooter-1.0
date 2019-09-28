@@ -10,10 +10,15 @@ import com.edgarasvilija.spaceshooter.GameActivity;
 
 public class Dashboard
 {
-    GameActivity gameActivity = new GameActivity();
+    GameActivity gameActivity;
     private float pointsSize;
     private float resultSize;
     private float restartGameSize;
+
+    public Dashboard(GameActivity gameActivity)
+    {
+        this.gameActivity = gameActivity;
+    }
 
     public void gamePlayingInfo(Paint paint, Canvas canvas, int pointsScored, long timeLeft, int screenWidth)
     {
@@ -24,7 +29,7 @@ public class Dashboard
         canvas.drawText("Points: " + pointsScored, 10, 20, paint);
         pointsSize = gameActivity.getTextSize(5.5f);
         paint.setTextSize(pointsSize);
-        canvas.drawText("" + timeLeft, screenWidth - 60, 350, paint);
+        canvas.drawText("" + timeLeft, screenWidth - 65, 350, paint);
     }
 
     public void gameEndedInfo(Paint paint, Canvas canvas, int pointsScored, int highestScore, SharedPreferences.Editor highestScoreWritter,

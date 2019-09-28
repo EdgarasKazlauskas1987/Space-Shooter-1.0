@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class MainActivity extends Activity implements View.OnClickListener
+public class MainActivity extends Activity
 {
 
     @Override
@@ -26,10 +26,16 @@ public class MainActivity extends Activity implements View.OnClickListener
         int bestResult = prefs.getInt("highestScore", 1);
         textFastestTime.setText("Best Result:  " + bestResult);
 
-        //Getting reference to Play button in layout
-        Button playButton = (Button) findViewById(R.id.playButton);
-        //Listening for clicks
-        playButton.setOnClickListener(this);
+        //Start Game Activity
+        Button startButton = (Button) findViewById(R.id.playButton);
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), GameActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         //Start Credits activity
         Button creditsButton = (Button) findViewById(R.id.buttonCredits);
@@ -51,17 +57,5 @@ public class MainActivity extends Activity implements View.OnClickListener
                 System.exit(0);
             }
         });
-    }
-
-    //Start Game activity
-    @Override
-    public void onClick(View view)
-    {
-        //Intent object will let us switch between activities
-        Intent intent = new Intent(this, GameActivity.class);
-        //Starting new activity
-        startActivity(intent);
-        //Finishing this(layout) activity
-        finish();
     }
 }

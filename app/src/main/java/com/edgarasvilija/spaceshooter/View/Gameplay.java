@@ -71,7 +71,7 @@ public class Gameplay extends SurfaceView implements Runnable {
 
     AudioConfiguration audioConfig;
     Chronometer chronometer;
-    Dashboard dashboard = new Dashboard();
+    Dashboard dashboard;
     DrawElements drawElements = new DrawElements();
     GameplayController controller = new GameplayController();
     ShieldsHandler shieldsHandler = new ShieldsHandler();
@@ -116,6 +116,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         listOfRedLasers = new ArrayList<>();
         enemyShip1LaserBlasts = new ArrayList<>();
         audioConfig = new AudioConfiguration(context);
+        dashboard = new Dashboard(gameActivity);
         chronometer = new Chronometer(context);
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
