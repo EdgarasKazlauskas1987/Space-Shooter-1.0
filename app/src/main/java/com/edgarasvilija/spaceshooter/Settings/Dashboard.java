@@ -15,13 +15,16 @@ public class Dashboard
     private float resultSize;
     private float restartGameSize;
 
-    public void gamePlayingInfo(Paint paint, Canvas canvas, int pointsScored, int shieldsLeft)
+    public void gamePlayingInfo(Paint paint, Canvas canvas, int pointsScored, long timeLeft, int screenWidth)
     {
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setColor(Color.argb(255, 255, 255, 255));
         pointsSize = gameActivity.getTextSize(2.5f);
         paint.setTextSize(pointsSize);
         canvas.drawText("Points: " + pointsScored, 10, 20, paint);
+        pointsSize = gameActivity.getTextSize(5.5f);
+        paint.setTextSize(pointsSize);
+        canvas.drawText("" + timeLeft, screenWidth - 60, 350, paint);
     }
 
     public void gameEndedInfo(Paint paint, Canvas canvas, int pointsScored, int highestScore, SharedPreferences.Editor highestScoreWritter,

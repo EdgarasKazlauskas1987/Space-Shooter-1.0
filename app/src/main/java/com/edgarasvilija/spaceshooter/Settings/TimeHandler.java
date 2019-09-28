@@ -1,30 +1,12 @@
 package com.edgarasvilija.spaceshooter.Settings;
 
-import android.os.CountDownTimer;
 
+import android.os.SystemClock;
 
-public class TimeHandler extends CountDownTimer
+public class TimeHandler
 {
-    private volatile long countdownMilliseconds ;
-
-    public TimeHandler(long duration, long interval)
+    public static long TimeLeft(long levelTime, long elapsedTime)
     {
-        super(duration, interval);
-    }
-
-    @Override
-    public void onTick(long l)
-    {
-        countdownMilliseconds = l;
-    }
-
-    @Override
-    public void onFinish() {
-
-    }
-
-    public long getCountdownMilliseconds()
-    {
-        return countdownMilliseconds;
+        return levelTime - ((SystemClock.elapsedRealtime() - elapsedTime)/1000);
     }
 }

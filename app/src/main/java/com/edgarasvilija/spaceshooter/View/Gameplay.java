@@ -6,10 +6,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Chronometer;
 
 import com.edgarasvilija.spaceshooter.Controller.GameplayController;
 import com.edgarasvilija.spaceshooter.GameActivity;
@@ -58,6 +60,8 @@ public class Gameplay extends SurfaceView implements Runnable {
 
     private final int xLeftCorner = 0;
     private int framesPerSecond = 0;
+    private long timeWhenStopped;
+    private long levelTime;
 
     private static ArrayList<RedLaser> listOfRedLasers = new ArrayList<>() ;
     private static ArrayList<BlueLaser> enemyShip1LaserBlasts = new ArrayList<>();
@@ -66,6 +70,7 @@ public class Gameplay extends SurfaceView implements Runnable {
     private static ArrayList<Shield> shields = new ArrayList<>();
 
     AudioConfiguration audioConfig;
+    Chronometer chronometer;
     Dashboard dashboard = new Dashboard();
     DrawElements drawElements = new DrawElements();
     GameplayController controller = new GameplayController();
@@ -75,8 +80,6 @@ public class Gameplay extends SurfaceView implements Runnable {
     GameplayButtons gameplayButtons = new GameplayButtons();
     GameplayShips gameplayShips = new GameplayShips();
     GameplayShields gameplayShields = new GameplayShields();
-
-    //TimeHandler timeHandler;
 
     public Gameplay(GameActivity gameActivity, int screenWidth, int screenHeight, int rightForPlayerShip)
     {
@@ -113,9 +116,11 @@ public class Gameplay extends SurfaceView implements Runnable {
         listOfRedLasers = new ArrayList<>();
         enemyShip1LaserBlasts = new ArrayList<>();
         audioConfig = new AudioConfiguration(context);
-
-/*        timeHandler = new TimeHandler(30000, 1000);
-        timeHandler.start();*/
+        chronometer = new Chronometer(context);
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.start();
+        timeWhenStopped = 0;
+        levelTime = 10;
     }
 
     @Override
@@ -163,11 +168,12 @@ public class Gameplay extends SurfaceView implements Runnable {
 
     private void update(float deltaTime)
     {
-        //Log.d("Edgaras","Seconds left: " + timeHandler.getCountdownMilliseconds() );
+        if (TimeHandler.TimeLeft(levelTime, chronometer.getBase()) == 0)
+            gameEnded = true;
+
         decrementPointsScored();
 
         gameplayShips.getPlayerShip().update(deltaTime, screenHeight - gameplayButtons.getTargetButton().getButton().getHeight() - gameplayShips.getPlayerShip().getRawPlayerShip().getHeight());
-
         gameplayShips.getEnemyShip1().update(deltaTime);
         gameplayShips.getEnemyShip2().update(deltaTime);
         gameplayShips.getEnemyShip3().update(deltaTime);
@@ -374,7 +380,7 @@ public class Gameplay extends SurfaceView implements Runnable {
             //Information showed if game is still played or ended
             if (!gameEnded)
             {
-                dashboard.gamePlayingInfo(paint, canvas, pointsHandler.getPoints(), shieldsHandler.getShieldsLeft());
+                dashboard.gamePlayingInfo(paint, canvas, pointsHandler.getPoints(), TimeHandler.TimeLeft(levelTime, chronometer.getBase()), screenWidth );
             }
             else
             {
@@ -387,6 +393,8 @@ public class Gameplay extends SurfaceView implements Runnable {
 
     public void pause() {
         playing = false;
+        timeWhenStopped = chronometer.getBase() - SystemClock.elapsedRealtime();
+        chronometer.stop();
         //timeHandler.cancel();
         try {
             gameThread.join(10);
@@ -399,6 +407,8 @@ public class Gameplay extends SurfaceView implements Runnable {
     public void resume()
     {
         playing = true;
+        chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+        chronometer.start();
 /*        timeHandler = new TimeHandler(timeHandler.getCountdownMilliseconds(), 1000);
         timeHandler.start();*/
         gameThread = new Thread(this);
