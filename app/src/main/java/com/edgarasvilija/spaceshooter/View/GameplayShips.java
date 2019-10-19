@@ -5,12 +5,17 @@ import android.content.Context;
 import com.edgarasvilija.spaceshooter.Model.EnemyShip;
 import com.edgarasvilija.spaceshooter.Model.PlayerShip;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class GameplayShips
 {
     private PlayerShip playerShip;
     private EnemyShip enemyShip1;
     private EnemyShip enemyShip2;
     private EnemyShip enemyShip3;
+    private ArrayList<EnemyShip> enemyShips = new ArrayList<>();
+
 
     public void createShips(Context context, int screenWidth, int screenHeight)
     {
@@ -28,6 +33,7 @@ public class GameplayShips
         enemyShip1 = new EnemyShip(context, 5, 0);
         enemyShip2 = new EnemyShip(context, 5, 0);
         enemyShip3 = new EnemyShip(context, 5, 0);
+        enemyShips.addAll(Arrays.asList(enemyShip1, enemyShip2, enemyShip3));
     }
 
     public PlayerShip getPlayerShip()
@@ -46,5 +52,10 @@ public class GameplayShips
     public EnemyShip getEnemyShip3()
     {
         return enemyShip3;
+    }
+
+    public ArrayList<EnemyShip> getAllEnemyShips()
+    {
+        return enemyShips;
     }
 }

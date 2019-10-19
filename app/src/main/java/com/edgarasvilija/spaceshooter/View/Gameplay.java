@@ -17,6 +17,7 @@ import com.edgarasvilija.spaceshooter.Controller.GameplayController;
 import com.edgarasvilija.spaceshooter.GameActivity;
 import com.edgarasvilija.spaceshooter.Helper.DrawElements;
 import com.edgarasvilija.spaceshooter.Model.BlueLaser;
+import com.edgarasvilija.spaceshooter.Model.EnemyShip;
 import com.edgarasvilija.spaceshooter.Model.RedLaser;
 import com.edgarasvilija.spaceshooter.Model.Meteor;
 import com.edgarasvilija.spaceshooter.Model.Shield;
@@ -490,14 +491,11 @@ public class Gameplay extends SurfaceView implements Runnable {
     //Decrement points scored when enemy ship leaves screen
     private void decrementPointsScored()
     {
-        if (gameplayShips.getEnemyShip1().getyCoordinate() > gameActivity.getScreenHeight())
-            pointsHandler.decrementPoints();
-
-        if (gameplayShips.getEnemyShip2().getyCoordinate() > gameActivity.getScreenHeight())
-            pointsHandler.decrementPoints();
-
-        if (gameplayShips.getEnemyShip3().getyCoordinate() > gameActivity.getScreenHeight())
-            pointsHandler.decrementPoints();
+        for (EnemyShip enemyShip : gameplayShips.getAllEnemyShips())
+        {
+            if (enemyShip.getyCoordinate() > gameActivity.getScreenHeight())
+                pointsHandler.decrementPoints();
+        }
     }
 
     //Generate random number to decide if enemy ship shoots
