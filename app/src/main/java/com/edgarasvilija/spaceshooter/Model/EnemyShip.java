@@ -9,6 +9,8 @@ import android.util.Log;
 import com.edgarasvilija.spaceshooter.GameActivity;
 import com.edgarasvilija.spaceshooter.R;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -24,12 +26,13 @@ public class EnemyShip
     private int xCoordinate;
     private int yCoordinate;
 
-    //holds coordinates of 4 edges of object
     private Rect enemyShipRect;
+
+    private ArrayList<BlueLaser> laserBlasts = new ArrayList<>();
 
     Random generator = new Random();
 
-    public EnemyShip(Context context, int screenX, int screenY) {
+    public EnemyShip(Context context) {
 
         int whichBitmap = generator.nextInt(3);
         switch (whichBitmap) {
@@ -53,7 +56,7 @@ public class EnemyShip
         enemyShip = Bitmap.createScaledBitmap(rawEnemyShip, root, root, true);
 
         xCoordinate = generator.nextInt(gameActivity.getScreenWidth() - getRawEnemyShip().getWidth());
-        Log.i("constructor " + xCoordinate, "******");
+
         // Initialize the hit box
         enemyShipRect = new Rect(getxCoordinate(), (int) getyCoordinate(), enemyShip.getWidth(), enemyShip.getHeight());
     }
@@ -67,7 +70,6 @@ public class EnemyShip
             Random placeGenerator = new Random();
             //putting respawned enemy ship in a random X spot
             xCoordinate = placeGenerator.nextInt(gameActivity.getScreenWidth() - getRawEnemyShip().getWidth());
-            Log.i("update " + xCoordinate, "******");
             yCoordinate = 0;
 
         } else {
@@ -98,6 +100,16 @@ public class EnemyShip
         return yCoordinate;
     }
 
+    public List<BlueLaser> getAllLaserBlasts()
+    {
+        return laserBlasts;
+    }
+
+    public void addLaserBlast(BlueLaser laserBlast)
+    {
+        laserBlasts.add(laserBlast);
+    }
+
     public void setxCoordinate(int xCoordinate) {
         this.xCoordinate = xCoordinate;
     }
@@ -112,7 +124,6 @@ public class EnemyShip
         Random placeGenerator = new Random();
 
         xCoordinate = placeGenerator.nextInt(gameActivity.getScreenWidth() - getRawEnemyShip().getWidth());
-        Log.i("setyCoordinate " + xCoordinate, "******");
     }
 }
 

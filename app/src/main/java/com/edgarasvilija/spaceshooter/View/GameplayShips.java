@@ -30,9 +30,9 @@ public class GameplayShips
 
     private void createEnemyShips(Context context)
     {
-        enemyShip1 = new EnemyShip(context, 5, 0);
-        enemyShip2 = new EnemyShip(context, 5, 0);
-        enemyShip3 = new EnemyShip(context, 5, 0);
+        enemyShip1 = new EnemyShip(context);
+        enemyShip2 = new EnemyShip(context);
+        enemyShip3 = new EnemyShip(context);
         enemyShips.addAll(Arrays.asList(enemyShip1, enemyShip2, enemyShip3));
     }
 
