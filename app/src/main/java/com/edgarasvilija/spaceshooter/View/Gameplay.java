@@ -109,6 +109,7 @@ public class Gameplay extends SurfaceView implements Runnable {
 
         gameplayButtons.createButtons(context, screenWidth, screenHeight);
         gameplayShips.createShips(context, screenWidth, screenHeight);
+        gameplayShields.removeAllShields(shields);
         gameplayShields.createShields(shields, context, screenWidth, screenHeight);
 
         redLaser = new RedLaser(gameActivity, screenWidth, screenHeight, R.drawable.img_red_laser);
@@ -121,7 +122,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         chronometer.setBase(SystemClock.elapsedRealtime());
         chronometer.start();
         timeWhenStopped = 0;
-        levelTime = 60;
+        levelTime = 10;
     }
 
     @Override
@@ -143,7 +144,8 @@ public class Gameplay extends SurfaceView implements Runnable {
             //will multiple the distance to move by 5.
             //it will mean that when the difference is 2 then it updates fast
             //therefore you dont need the enemyShip to move by that much, but
-            //if the difference is 5, then it means that it updates a bit
+            //if the difference is 5, then it means t
+            // hat it updates a bit
             //slow, therefore it means that you have to move the enemyShip by
             //more positions (x5 time more). See the code in enemyShip class
             //where I use deltaTime which is the difference between currentTime
@@ -396,7 +398,7 @@ public class Gameplay extends SurfaceView implements Runnable {
         playing = false;
         timeWhenStopped = chronometer.getBase() - SystemClock.elapsedRealtime();
         chronometer.stop();
-        //timeHandler.cancel();
+
         try {
             gameThread.join(10);
         } catch (InterruptedException e) {
@@ -408,10 +410,10 @@ public class Gameplay extends SurfaceView implements Runnable {
     public void resume()
     {
         playing = true;
+
         chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
         chronometer.start();
-/*        timeHandler = new TimeHandler(timeHandler.getCountdownMilliseconds(), 1000);
-        timeHandler.start();*/
+
         gameThread = new Thread(this);
         gameThread.start();
     }

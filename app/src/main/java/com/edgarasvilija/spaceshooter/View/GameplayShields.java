@@ -11,7 +11,6 @@ import java.util.Arrays;
 public class GameplayShields
 {
     private Shield shield1;
-
     private Shield shield2;
     private Shield shield3;
 
@@ -28,5 +27,10 @@ public class GameplayShields
     {
         if (shields.size() > 0)
             shields.remove(shields.size() - 1);
+    }
+
+    public void removeAllShields(ArrayList<Shield> shields)
+    {
+        shields.clear();
     }
 }
